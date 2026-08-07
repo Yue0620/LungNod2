@@ -1,69 +1,87 @@
 <template>
   <div class="network-container">
-    <!-- 1. 左侧控制窗格 -->
     <aside class="data-aside" :class="{ 'aside-collapsed': isCollapsed }">
       <div class="aside-header">
-        <span v-if="!isCollapsed">分析中心 (v4.0)</span>
+        <span v-if="!isCollapsed">基因网络工作站</span>
         <el-button link @click="toggleSidebar">
           <el-icon><DArrowLeft v-if="!isCollapsed" /><DArrowRight v-else /></el-icon>
         </el-button>
       </div>
 
       <div v-if="!isCollapsed" class="aside-content">
-        <div class="input-section">
-          <div class="input-label">1. 互作网络 (Edge List):</div>
-          <el-input v-model="rawEdgesText" type="textarea" :rows="6" class="gene-textarea" />
-        </div>
-        <div class="input-section">
-          <div class="input-label">2. 节点聚类 (Node Attribute):</div>
-          <el-input v-model="rawNodesText" type="textarea" :rows="6" class="gene-textarea" />
-        </div>
-
-        <div class="action-group">
-          <el-button type="primary" @click="parseAndLoad" class="w-100" :icon="Check">执行全量更新</el-button>
-          <div class="secondary-btns">
-            <el-button @click="fillExample50" size="small">50点全联通示例</el-button>
-            <el-button @click="clearData" size="small" type="danger" plain>清空</el-button>
+        <!-- 1. 压力测试区 -->
+        <div class="layout-controls stress-panel">
+          <div class="config-title">快速压力测试 (节点规模)</div>
+          <div class="stress-grid">
+            <el-button v-for="n in [50, 100, 150, 200, 1000]" :key="n"
+                       size="small" @click="runStressTest(n)" :type="n > 500 ? 'warning' : 'default'">
+              {{ n }}
+            </el-button>
           </div>
         </div>
 
+        <!-- 2. 手动输入区 -->
+        <div class="input-section">
+          <div class="input-label">自定义连线 (Source Target):</div>
+          <el-input v-model="rawEdgesText" type="textarea" :rows="3" class="gene-textarea" />
+        </div>
+        <el-button type="primary" @click="parseAndLoad" class="w-100" :icon="Check">解析自定义数据</el-button>
+
         <el-divider />
 
+        <!-- 3. 布局切换核心 -->
         <div class="layout-controls">
-          <div class="config-title">核心排版切换</div>
-          <!-- 核心：切换布局模式 -->
-          <el-radio-group v-model="layoutMode" size="small" @change="parseAndLoad" class="w-100">
-            <el-radio-button label="circular">全域致密圆</el-radio-button>
-            <el-radio-button label="cluster">聚类容器盒</el-radio-button>
-          </el-radio-group>
+          <div class="config-title">排版算法</div>
+          <el-select v-model="pendingLayoutName" size="small" class="w-100">
+            <el-option v-for="item in layoutOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+          <el-button type="primary" size="small" @click="reLayout" class="w-100" style="margin-top: 10px;" icon="VideoPlay" :loading="isProcessing">
+            应用全局排版
+          </el-button>
 
-          <div class="config-title" style="margin-top: 15px;">视觉设置</div>
-          <el-switch v-model="showLabels" active-text="显示名称" @change="updateStyles" />
+          <div class="config-title" style="margin-top: 15px;">局部微调</div>
+          <el-button size="small" type="success" plain @click="layoutSelectedNodes" class="w-100" icon="Aim">
+            对选中项执行局部圆排版
+          </el-button>
         </div>
 
-        <el-button @click="reLayout" :icon="Refresh" class="w-100" style="margin-top:20px" :loading="isProcessing">
-          平滑重排
-        </el-button>
+        <div class="layout-controls">
+          <el-switch v-model="showLabels" active-text="显示基因名称" @change="updateStyles" />
+        </div>
       </div>
     </aside>
 
-    <!-- 2. 画布主区 -->
     <main class="canvas-main">
       <div ref="cyRef" class="cy-canvas"></div>
 
-      <!-- 右侧悬浮面板 -->
-      <div class="floating-stats-panel" v-if="nodeList.length > 0">
-        <div class="panel-inner-header">节点属性概览</div>
-        <el-table :data="nodeList" size="small" height="280" class="mini-table">
-          <el-table-column prop="id" label="基因" width="80" />
-          <el-table-column prop="cluster" label="聚类" show-overflow-tooltip />
-          <el-table-column prop="degree" label="度" width="40" />
-          <el-table-column label="定位" width="40">
-            <template #default="scope">
-              <el-button link type="primary" @click="focusNode(scope.row.id)"><el-icon><View /></el-icon></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+      <!-- 左下角图例 -->
+      <div class="cluster-legend" v-if="legendList.length > 0">
+        <div class="legend-header">聚类图例 (点击选择)</div>
+        <el-scrollbar max-height="150px">
+          <div v-for="item in legendList" :key="item.name" class="legend-item" @click="selectNodesByCluster(item.name)">
+            <span class="color-dot" :style="{ backgroundColor: item.color }"></span>
+            <span class="legend-label">{{ item.name }}</span>
+          </div>
+        </el-scrollbar>
+      </div>
+
+      <!-- 右侧看板 -->
+      <div class="right-stats-wrapper" :class="{ 'stats-open': showRightTable }">
+        <div class="toggle-button" @click="showRightTable = !showRightTable">
+          <el-icon><DataLine v-if="!showRightTable" /><Close v-else /></el-icon>
+        </div>
+        <div class="stats-panel" v-if="showRightTable">
+          <div class="panel-inner-header">基因拓扑统计 (N={{ nodeList.length }})</div>
+          <el-table :data="nodeList" size="small" height="100%" stripe border>
+            <el-table-column prop="id" label="基因" />
+            <el-table-column prop="degree" label="度" width="55" sortable />
+            <el-table-column label="操作" width="50" align="center">
+              <template #default="scope">
+                <el-button link type="primary" @click="focusNode(scope.row.id)"><el-icon><View /></el-icon></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
       <div class="grid-bg"></div>
     </main>
@@ -74,20 +92,30 @@
 import { ref, onMounted, shallowRef } from 'vue';
 import cytoscape from 'cytoscape';
 import fcose from 'cytoscape-fcose';
-import { DArrowLeft, DArrowRight, Refresh, Check, View } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
+import { DArrowLeft, DArrowRight, Refresh, Check, View, DataLine, Close, Aim, VideoPlay } from '@element-plus/icons-vue';
 
 cytoscape.use(fcose);
 
 const cyRef = ref(null);
 const cyInstance = shallowRef(null);
 const isCollapsed = ref(false);
-const isProcessing = ref(false);
+const showRightTable = ref(false);
 const showLabels = ref(false);
-const layoutMode = ref('cluster'); // 默认聚类
+const isProcessing = ref(false);
 const rawEdgesText = ref('');
 const rawNodesText = ref('');
 const nodeList = ref([]);
-let currentLayout = null;
+const legendList = ref([]);
+const pendingLayoutName = ref('fcose');
+
+const layoutOptions = [
+  { label: '智能力导向 (fCoSE)', value: 'fcose' },
+  { label: '致密圆形 (Circle)', value: 'circle' },
+  { label: '同心圆布局 (Concentric)', value: 'concentric' }
+];
+
+let currentLayoutTask = null;
 
 const initCytoscape = () => {
   cyInstance.value = cytoscape({
@@ -96,223 +124,229 @@ const initCytoscape = () => {
       {
         selector: 'node',
         style: {
-          'width': 'data(size)',
-          'height': 'data(size)',
-          'background-color': 'data(color)',
+          'width': 'data(size)', 'height': 'data(size)',
+          'background-color': 'data(mainColor)',
           'label': showLabels.value ? 'data(label)' : '',
-          'font-size': '8px',
-          'text-valign': 'center',
-          'color': '#333',
-          'border-width': 1,
-          'border-color': '#fff',
-          'z-index': 10,
-          'transition-property': 'background-color, opacity, width, height',
-          'transition-duration': '0.3s'
+          'font-size': '8px', 'min-zoomed-font-size': '6px',
+          'text-valign': 'center', 'color': '#333', 'border-width': 1, 'border-color': '#fff',
+          'pie-size': '100%',
+          'pie-1-background-color': 'data(color1)', 'pie-1-background-size': 'data(p1)',
+          'pie-2-background-color': 'data(color2)', 'pie-2-background-size': 'data(p2)',
         }
       },
-      {
-        selector: ':parent', // 【盒子容器样式】
-        style: {
-          'background-color': '#f0f4f8',
-          'background-opacity': 0.3,
-          'border-width': 1,
-          'border-color': '#409EFF',
-          'border-style': 'dashed',
-          'shape': 'roundrectangle',
-          'padding': 30,
-          'label': 'data(label)',
-          'text-valign': 'top',
-          'text-halign': 'center',
-          'font-size': '12px',
-          'font-weight': 'bold',
-          'color': '#409EFF'
-        }
-      },
-      {
-        selector: 'edge',
-        style: {
-          'width': 1,
-          'line-color': '#adb5bd',
-          'curve-style': 'haystack',
-          'opacity': 0.15,
-          'events': 'no'
-        }
-      },
-      {
-        selector: '.faded',
-        style: {
-          'opacity': 0.05,
-          'text-opacity': 0
-        }
-      }
+      { selector: 'node:selected', style: { 'border-width': 4, 'border-color': '#42b983' } },
+      { selector: 'edge', style: { 'width': 0.8, 'line-color': '#adb5bd', 'curve-style': 'haystack', 'opacity': 0.15, 'events': 'no' } },
+      { selector: '.faded', style: { 'opacity': 0.05, 'text-opacity': 0 } }
     ]
   });
 
-  // 【核心修复】：防止 Hover 时父容器变淡导致内容消失
   cyInstance.value.on('mouseover', 'node', (e) => {
-    const node = e.target;
-    if (node.isParent()) return;
-
-    const neighborhood = node.neighborhood().add(node);
-
-    // 关键过滤：仅让非邻居节点变淡，且显式排除所有父节点 (:parent)
-    cyInstance.value.elements().filter(ele => {
-      return !neighborhood.contains(ele) && !ele.isParent();
-    }).addClass('faded');
+    const neighborhood = e.target.neighborhood().add(e.target);
+    cyInstance.value.elements().addClass('faded');
+    neighborhood.removeClass('faded');
   });
-
-  cyInstance.value.on('mouseout', 'node', () => {
-    cyInstance.value.elements().removeClass('faded');
-  });
-};
-
-const parseAndLoad = () => {
-  isProcessing.value = true;
-  const edgeLines = rawEdgesText.value.trim().split('\n');
-  const nodeLines = rawNodesText.value.trim().split('\n');
-  const elements = [];
-  const nodesSet = new Set();
-  const nodeToCluster = {};
-  const clusters = new Set();
-  const degreeMap = {};
-
-  nodeLines.forEach(line => {
-    const [n, c] = line.trim().split(/\s+/);
-    if (n && c) { nodeToCluster[n] = c; clusters.add(c); }
-  });
-
-  edgeLines.forEach(line => {
-    const [s, t] = line.trim().split(/\s+/);
-    if (s && t) {
-      degreeMap[s] = (degreeMap[s] || 0) + 1;
-      degreeMap[t] = (degreeMap[t] || 0) + 1;
-    }
-  });
-
-  const maxD = Math.max(...Object.values(degreeMap), 1);
-  const tableData = [];
-
-  edgeLines.forEach(line => {
-    const [s, t] = line.trim().split(/\s+/);
-    if (s && t) {
-      [s, t].forEach(id => {
-        if (!nodesSet.has(id)) {
-          const cluster = nodeToCluster[id] || 'Other';
-          const d = degreeMap[id] || 0;
-          const ratio = d / maxD;
-          const color = `hsl(${(cluster.split('').reduce((a,b)=>a+b.charCodeAt(0),0) * 137) % 360}, 75%, 60%)`;
-
-          elements.push({
-            data: {
-              id, label: id,
-              // 模式判断：cluster 模式添加 parent 属性
-              parent: layoutMode.value === 'cluster' ? `p-${cluster}` : null,
-              cluster, size: 8 + (ratio * 15), color
-            }
-          });
-          nodesSet.add(id);
-          tableData.push({ id, degree: d, cluster });
-        }
-      });
-      elements.push({ data: { id: `e-${s}-${t}`, source: s, target: t } });
-    }
-  });
-
-  // 聚类模式下创建容器节点
-  if (layoutMode.value === 'cluster') {
-    clusters.forEach(c => elements.push({ data: { id: `p-${c}`, label: c } }));
-  }
-
-  if (cyInstance.value) {
-    if (currentLayout) currentLayout.stop();
-    cyInstance.value.elements().remove();
-    cyInstance.value.add(elements);
-    nodeList.value = tableData.sort((a,b) => b.degree - a.degree);
-    reLayout();
-  }
+  cyInstance.value.on('mouseout', 'node', () => cyInstance.value.elements().removeClass('faded'));
 };
 
 const reLayout = () => {
   if (!cyInstance.value) return;
-  if (currentLayout) currentLayout.stop();
+  isProcessing.value = true;
+  const nodes = cyInstance.value.nodes();
 
-  const isCircular = layoutMode.value === 'circular';
-
-  currentLayout = cyInstance.value.layout({
-    name: 'fcose',
-    animate: true,
-    animationDuration: 1000,
+  let config = {
+    name: pendingLayoutName.value,
+    animate: nodes.length < 300,
     fit: true,
-    padding: 40,
-    tile: !isCircular, // 聚类模式下开启平铺
-    gravity: isCircular ? 25.0 : 1.2,
-    nodeRepulsion: isCircular ? 150000 : 45000,
-    idealEdgeLength: isCircular ? 40 : 50,
-    nodeDimensionsIncludeLabels: true
-  });
+    padding: 20
+  };
 
-  currentLayout.one('layoutstop', () => { isProcessing.value = false; });
-  currentLayout.run();
+  // 【核心修复】：为不同算法配置差异化参数
+  switch (pendingLayoutName.value) {
+    case 'circle':
+      config.spacingFactor = 0.5; // 极度压缩
+      config.nodeRepulsion = 100;
+      config.gravity = 10;
+      config.sort = (a, b) => (a.data('cluster') || '').localeCompare(b.data('cluster') || '');
+      break;
+
+    case 'fcose':
+      config.nodeRepulsion = 5500; // 正常的排斥力，让它散开
+      config.gravity = 0.15;       // 【关键】极小的向心力，防止它变成圆
+      config.idealEdgeLength = 60; // 正常的线长，呈现蛛网结构
+      config.nodeDimensionsIncludeLabels = true;
+      break;
+
+    case 'concentric':
+      config.concentric = (node) => node.degree();
+      config.levelWidth = () => 1;
+      config.minNodeSpacing = 40;
+      break;
+  }
+
+  if (currentLayoutTask) currentLayoutTask.stop();
+  currentLayoutTask = cyInstance.value.layout(config);
+  currentLayoutTask.one('layoutstop', () => isProcessing.value = false);
+  currentLayoutTask.run();
+
+  nodeList.value = cyInstance.value.nodes().map(n => ({
+    id: n.id(), degree: n.degree(), clusters: n.data('clusters')
+  })).sort((a,b) => b.degree - a.degree);
 };
 
-const fillExample50 = () => {
+// 压力测试：生成模拟网络
+const runStressTest = (n) => {
   let edges = "", nodes = "";
-  const clusters = ["Pathway_A", "Pathway_B", "Pathway_C", "Pathway_D", "Pathway_E"];
-  for(let i=1; i<=50; i++) {
+  const clusters = ["Path_A", "Path_B", "Path_C", "Path_D", "Path_E"];
+  for (let i = 1; i <= n; i++) {
     const id = `G_${i}`;
-    nodes += `${id} ${clusters[Math.floor((i-1) / 10)]}\n`;
-  }
-  for(let i=1; i<=50; i++) {
-    for(let j=i+1; j<=50; j++) {
-      if(Math.random() > 0.65) edges += `G_${i} G_${j}\n`;
+    const clus = clusters[i % 5];
+    nodes += `${id} ${clus}\n`;
+    edges += `${id} G_${(i % n) + 1}\n`; // 基础环形
+    if (Math.random() > 0.8) {
+      edges += `${id} G_${Math.ceil(Math.random() * (n/10) || 1)}\n`; // 连向 Hub
     }
   }
-  rawEdgesText.value = edges; rawNodesText.value = nodes;
+  rawEdgesText.value = edges;
+  rawNodesText.value = nodes;
   parseAndLoad();
+};
+
+const parseAndLoad = () => {
+  const edgeLines = rawEdgesText.value.trim().split('\n');
+  const nodeLines = rawNodesText.value.trim().split('\n');
+  const nodesSet = new Set();
+  const nodeToClusters = {};
+  const clustersFound = new Set();
+  const degreeMap = {};
+
+  nodeLines.forEach(line => {
+    const parts = line.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      const [n, cStr] = parts;
+      const cList = cStr.split(',');
+      nodeToClusters[n] = cList;
+      cList.forEach(c => clustersFound.add(c));
+    }
+  });
+
+  edgeLines.forEach(line => {
+    const parts = line.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      degreeMap[parts[0]] = (degreeMap[parts[0]] || 0) + 1;
+      degreeMap[parts[1]] = (degreeMap[parts[1]] || 0) + 1;
+    }
+  });
+
+  const maxD = Math.max(...Object.values(degreeMap), 1);
+  legendList.value = Array.from(clustersFound).map(c => ({ name: c, color: getClusterColor(c) }));
+
+  const elements = [];
+  Object.keys(degreeMap).forEach(id => {
+    const cList = nodeToClusters[id] || ['Other'];
+    const d = degreeMap[id] || 0;
+    const nodeData = {
+      id, label: id, cluster: cList[0], clusters: cList,
+      size: 14 + (d / maxD * 25), mainColor: getClusterColor(cList[0])
+    };
+    if (cList.length > 1) {
+      nodeData.color1 = getClusterColor(cList[0]); nodeData.p1 = 50;
+      nodeData.color2 = getClusterColor(cList[1]); nodeData.p2 = 50;
+    }
+    elements.push({ data: nodeData });
+  });
+
+  edgeLines.forEach(line => {
+    const parts = line.trim().split(/\s+/);
+    if (parts.length >= 2) elements.push({ data: { id: `e-${parts[0]}-${parts[1]}`, source: parts[0], target: parts[1] } });
+  });
+
+  if (cyInstance.value) {
+    cyInstance.value.elements().remove();
+    cyInstance.value.add(elements);
+    reLayout();
+  }
+};
+
+const selectNodesByCluster = (clusterName) => {
+  cyInstance.value.elements().unselect();
+  const targets = cyInstance.value.nodes().filter(n => n.data('clusters')?.includes(clusterName));
+  targets.select();
+  cyInstance.value.animate({ center: { eles: targets } }, { duration: 500 });
+};
+
+const layoutSelectedNodes = () => {
+  const selectedNodes = cyInstance.value.nodes(':selected');
+  if (selectedNodes.length < 2) return ElMessage.warning('请选择多个节点');
+  const pos = selectedNodes.boundingBox();
+  selectedNodes.layout({
+    name: 'circle',
+    radius: selectedNodes.length * 4,
+    boundingBox: { x1: pos.x1-50, y1: pos.y1-50, x2: pos.x2+50, y2: pos.y2+50 },
+    animate: true,
+    fit: false
+  }).run();
+};
+
+const getClusterColor = (c) => {
+  if (c === 'Other') return '#ced4da';
+  const hash = c.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return `hsl(${(hash * 137) % 360}, 65%, 60%)`;
+};
+
+const toggleSidebar = () => {
+  isCollapsed.value = !isCollapsed.value;
+  setTimeout(() => cyInstance.value?.resize(), 350);
 };
 
 const updateStyles = () => {
   cyInstance.value.style().selector('node').style('label', showLabels.value ? 'data(label)' : '').update();
 };
-const toggleSidebar = () => {
-  isCollapsed.value = !isCollapsed.value;
-  setTimeout(() => { cyInstance.value?.resize(); cyInstance.value?.fit(30); }, 350);
-};
+
 const focusNode = (id) => {
   const node = cyInstance.value.getElementById(id);
-  cyInstance.value.animate({ center: { eles: node }, zoom: 3 }, { duration: 500 });
+  cyInstance.value.animate({ center: { eles: node }, zoom: 2.5 }, { duration: 500 });
+  node.select();
 };
+
 const clearData = () => {
   rawEdgesText.value = ''; rawNodesText.value = '';
   cyInstance.value?.elements().remove();
-  nodeList.value = [];
+  nodeList.value = []; legendList.value = [];
 };
 
-onMounted(() => { initCytoscape(); fillExample50(); });
+onMounted(() => initCytoscape());
 </script>
 
 <style scoped>
-/* 保持一致的高级 UI 样式 */
 .network-container { display: flex; width: 100%; height: calc(100vh - 110px); background: #fff; overflow: hidden; }
-.data-aside { width: 340px; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; transition: all 0.3s ease; flex-shrink: 0; }
+.data-aside { width: 340px; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; transition: 0.3s ease; flex-shrink: 0; z-index: 100; }
 .aside-collapsed { width: 48px; }
 .aside-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-weight: bold; }
 .aside-content { padding: 15px; flex: 1; overflow-y: auto; }
-.input-section { margin-bottom: 15px; }
+
+.stress-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+.stress-grid .el-button { margin-left: 0 !important; }
+
+.input-section { margin-top: 15px; margin-bottom: 15px; }
 .input-label { font-size: 11px; color: #64748b; margin-bottom: 6px; font-weight: bold; }
 .gene-textarea :deep(.el-textarea__inner) { font-family: 'Monaco', monospace; font-size: 10px; background: #f9fafb; padding: 8px; }
-.layout-controls { background: #f8fafc; padding: 12px; border-radius: 10px; }
+.layout-controls { background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
+.config-title { font-size: 11px; color: #94a3b8; font-weight: bold; margin-bottom: 8px; }
+
 .canvas-main { flex: 1; position: relative; overflow: hidden; }
 .cy-canvas { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 2; }
-.floating-stats-panel {
-  position: absolute; top: 20px; right: 20px; width: 260px; z-index: 10;
-  background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
-  border: 1px solid rgba(64, 158, 255, 0.2); border-radius: 12px; padding: 12px;
-}
-.panel-inner-header { font-size: 12px; font-weight: bold; color: #1e293b; margin-bottom: 8px; border-left: 3px solid #409EFF; padding-left: 8px; }
-.mini-table :deep(.el-table__cell) { padding: 2px 0; font-size: 10px; }
+.right-stats-wrapper { position: absolute; top: 20px; right: 0; height: calc(100% - 40px); z-index: 10; display: flex; align-items: flex-start; transition: transform 0.4s ease; transform: translateX(100%); }
+.stats-open { transform: translateX(0); }
+.toggle-button { width: 32px; height: 100px; background: #42b983; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px 0 0 8px; }
+.stats-panel { width: 320px; height: 100%; background: #fff; border-left: 1px solid #e2e8f0; padding: 15px; }
+.panel-inner-header { font-size: 12px; font-weight: bold; color: #1e293b; margin-bottom: 10px; border-left: 4px solid #42b983; padding-left: 8px; }
+.cluster-legend { position: absolute; bottom: 20px; left: 20px; width: 220px; z-index: 10; background: rgba(255, 255, 255, 0.95); padding: 12px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.legend-header { font-size: 11px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+.legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 8px; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+.legend-item:hover { background: #ecf5ff; }
+.color-dot { width: 10px; height: 10px; border-radius: 2px; }
+.legend-label { font-size: 11px; color: #475569; }
 .grid-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(#e5e7eb 0.8px, transparent 0.8px); background-size: 30px 30px; opacity: 0.4; z-index: 1; }
-.w-100 { width: 100%; }
-.secondary-btns { display: flex; gap: 8px; margin-top: 8px; }
-.secondary-btns .el-button { flex: 1; }
+.w-100 { width: 100% !important; }
+.secondary-btns { margin-top: 10px; display: flex; gap: 8px; }
 </style>

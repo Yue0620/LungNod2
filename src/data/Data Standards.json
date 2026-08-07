@@ -1,0 +1,4975 @@
+{
+  "doc_id": "IMMUNITY-STD-v1.4.1",
+  "title": "免疫力专项数据分析标准",
+  "version": "1.4.1",
+  "institute": "中国科学院北京基因组研究所（国家生物信息中心）",
+  "address": "地址：北京市朝阳区北辰西路1号院104号楼 邮编：100101",
+  "preamble": "",
+  "chapters": [
+    {
+      "chapter_id": "section_1_",
+      "title": "1. 基因组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "1.1_germline_wgs/wes",
+          "title": "1.1 germline WGS/WES数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "germline WGS/WES数据分析的标准流程是指从原始WGS/WES测序数据出发，最终获得胚系SNV/INDEL变异结果的过程，通常包括实验设计与质控、比对、变异检测、注释等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 0,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 13,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "工作流调度工具，用于组织规则依赖、并行执行和结果文件追踪。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "容器运行环境，用于加载用于全基因组/全外显子组测序（WGS/WES）数据分析的容器wgswes_latest.sif，并保证软件环境可复现。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "随wgswes_latest.sif容器版本",
+                  "功能描述": "FASTQ接头裁剪和低质量序列过滤工具，并可联动FastQC输出质控结果。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "FastQC",
+                  "推荐版本": "随wgswes_latest.sif容器版本",
+                  "功能描述": "FASTQ质量控制工具，用于评估测序质量、GC含量、接头污染等指标。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "BWA-MEM",
+                  "推荐版本": "随wgswes_latest.sif容器版本",
+                  "功能描述": "短读长序列比对工具，用于将WGS/WES reads比对至GRCh38参考基因组。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.10+htslib-1.10.2-3ubuntu0.1或容器实际版本",
+                  "功能描述": "SAM/BAM/CRAM处理工具，用于排序、索引、BAM生成和比对统计。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "samblaster",
+                  "推荐版本": "随wgswes_latest.sif容器版本",
+                  "功能描述": "BAM流式处理工具，用于重复读段处理及mate标签补充。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "Sambamba",
+                  "推荐版本": "随wgswes_latest.sif容器版本",
+                  "功能描述": "BAM索引与处理工具，用于快速建立BAM索引。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "GATK",
+                  "推荐版本": "随wgswes_latest.sif容器版本",
+                  "功能描述": "胚系SNV/INDEL检测核心工具，执行BQSR、HaplotypeCaller、gVCF合并、联合分型和变异过滤。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "bcftools",
+                  "推荐版本": "随wgswes_latest.sif容器版本",
+                  "功能描述": "VCF/BCF处理工具，用于VCF流式读取、压缩和格式转换。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "VEP",
+                  "推荐版本": "cache 113",
+                  "功能描述": "Ensembl Variant Effect Predictor，用于对SNV/INDEL进行功能后果注释。"
+                },
+                {
+                  "序号": "12",
+                  "软件名称": "VEP_plugins",
+                  "推荐版本": "release 113",
+                  "功能描述": "VEP插件集合，本流程使用LoFtool插件补充功能影响注释。"
+                },
+                {
+                  "序号": "13",
+                  "软件名称": "python",
+                  "推荐版本": "Python3",
+                  "功能描述": "报告统计、绘图、HTML编译和WES区间生成脚本运行环境。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 1,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 12,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 primary assembly（GRCh38.primary_assembly.genome.Num.fa）"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GRCh38，Ensembl VEP cache 113，VEP_plugins-release-113"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "Trim Galore --paired（双端测序模式） --fastqc（生成FastQC报告） --cores 8（8线程执行裁剪与质控）"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "比对参数",
+                  "主要参数": "BWA-MEM -p（按paired/交错输入处理） -t 8（8线程比对） -R（写入read group，包含ID、LB、SM、PL信息）"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "BAM处理参数",
+                  "主要参数": "samtools sort -@ 20/-@ 4（排序线程数） samblaster --excludeDups（重复读段处理） --addMateTags（添加mate标签） --ignoreUnmated（忽略非成对reads） --maxSplitCount 2（最大split reads数量） --minNonOverlap 20（最小非重叠长度） samtools view --threads 7（BAM输出线程数）"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "BQSR参数",
+                  "主要参数": "GATK BaseRecalibrator --known-sites（已知变异位点VCF） --tmp-dir tmp/（临时目录） GATK ApplyBQSR --bqsr-recal-file（BQSR校正表） --tmp-dir tmp/（临时目录）。"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "WES区间参数",
+                  "主要参数": "targets_exome_bed（外显子捕获BED，留空则运行WGS） targets_padding_bp 100（靶区上下游各扩展100 bp）。"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "变异检测参数",
+                  "主要参数": "GATK HaplotypeCaller -L（WGS按染色体，WES使用padded target BED） --dbsnp（known_sites路径） --emit-ref-confidence GVCF（输出gVCF） --tmp-dir /tmp（临时目录）。"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "联合分型参数",
+                  "主要参数": "GATK CombineGVCFs -L（与HaplotypeCaller保持相同区间） --variant（输入样本gVCF） GATK GenotypeGVCFs -L（相同区间约束） --variant（合并gVCF）。"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "变异过滤参数",
+                  "主要参数": "GATK SelectVariants -select-type SNP/INDEL（拆分SNV和INDEL） GATK VariantFiltration（生成硬过滤VCF）。"
+                },
+                {
+                  "序号": "11",
+                  "分析步骤": "功能注释参数",
+                  "主要参数": "VEP --fork 4（4线程） --format vcf（VCF输入） --vcf（VCF输出） --offline --cache（离线cache模式） --dir_cache（cache路径） --cache_version 113（cache版本） --species homo_sapiens（物种） --assembly GRCh38（基因组版本） --dir_plugins（插件路径） --plugin LoFtool（LoFtool注释）。"
+                },
+                {
+                  "序号": "12",
+                  "分析步骤": "报告参数",
+                  "主要参数": "report_language Chinese/English（报告语言） png_dpi 300（图片分辨率） report_python python3（报告脚本解释器）。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 2,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 21,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all汇总流程最终目标输出，包括FASTQ质控、BAM统计、gVCF/VCF、注释VCF和HTML报告。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "trim_fastq使用Trim Galore对双端FASTQ进行接头和低质量序列裁剪，并同步生成初步FastQC结果。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "qc_after_filtered对裁剪后的FASTQ再次运行FastQC，输出R1/R2 HTML质控报告。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "bwa_mem使用BWA-MEM比对至GRCh38参考基因组，并通过samtools与samblaster完成排序和重复读段辅助处理。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "sambamba_index_bam使用sambamba为排序后的BAM文件建立索引。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "recalibrate_base_qualities使用GATK BaseRecalibrator基于known sites生成碱基质量校正表。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "apply_base_quality_recalibration使用GATK ApplyBQSR应用碱基质量校正，输出校正后的BAM。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "samtools_stats使用samtools index和samtools stats生成BAM索引和比对统计结果。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "prepare_exome_intervalsWES模式下按染色体生成扩展后的target BED区间；WGS模式下不触发该规则。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "call_variants使用GATK HaplotypeCaller按染色体或WES靶区生成每个样本的gVCF。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "combine_calls使用GATK CombineGVCFs按染色体合并多个样本的gVCF。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "genotype_variants使用GATK GenotypeGVCFs执行联合分型，生成逐染色体VCF。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "merge_variants使用GATK MergeVcfs合并逐染色体VCF，得到联合VCF。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "select_calls使用GATK SelectVariants将SNV和INDEL分别拆分输出。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "hard_filter_calls使用GATK VariantFiltration对SNV和INDEL执行硬过滤。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "merge_calls使用GATK MergeVcfs合并硬过滤后的SNV和INDEL结果。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "annotate_variants使用bcftools和VEP对过滤后VCF进行功能注释，并输出VEP统计HTML和注释VCF。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "collect_report_statistics收集FastQC、samtools stats、注释VCF和VEP统计信息，生成报告JSON数据。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "prepare_report_figures根据报告JSON绘制测序质量、覆盖度、变异数量、SNV替换谱和VEP注释图。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "render_html_report编译中英文HTML报告，并将PNG图像以base64形式嵌入报告。"
+                },
+                {
+                  "序号": "规则二十一",
+                  "内容": "report_only作为仅生成报告的汇总目标，便于已有结果时单独刷新HTML报告。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "1.2_somatic_wgs",
+          "title": "1.2 somatic WGS数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "Somatic WGS数据分析的标准流程是指从原始肿瘤-正常配对WGS测序数据出发，最终获得体细胞变异及肿瘤特征结果的过程，通常包括实验设计与质控、比对、预处理、体细胞变异检测、注释与综合解读等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 3,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 21,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "基于rule、wildcard和自动依赖解析的流程管理工具，用于组织并调度全流程分析步骤。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity",
+                  "推荐版本": "4.0.1",
+                  "功能描述": "容器运行环境，用于执行hmfwigitstools.sif并保证软件环境可复现。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "fastp",
+                  "推荐版本": "/",
+                  "功能描述": "FASTQ预处理与质控工具，用于双端reads过滤、接头处理并生成HTML/JSON质控报告。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "FastQC",
+                  "推荐版本": "/",
+                  "功能描述": "测序质量控制工具，用于对fastp过滤后的FASTQ进行read质量评估。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "bwa-mem2",
+                  "推荐版本": "2.2.1",
+                  "功能描述": "BWA-MEM算法的高性能实现，用于将WGS reads比对到GRCh38参考基因组。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "/",
+                  "功能描述": "SAM/BAM文件处理工具，用于排序、合并、read group添加、BAM转换和索引。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "Sambamba",
+                  "推荐版本": "/",
+                  "功能描述": "高性能BAM处理工具，用于SAM转BAM、排序与BAM索引。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "Samblaster",
+                  "推荐版本": "/",
+                  "功能描述": "比对后处理工具，用于重复reads处理、mate标签补充和split-read筛选。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "HTSlib tabix",
+                  "推荐版本": "/",
+                  "功能描述": "VCF索引工具，用于为压缩VCF生成tbi索引。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "HMFTools Redux",
+                  "推荐版本": "2.0",
+                  "功能描述": "HMF WGS预处理模块，用于一致性序列处理、BQR、MSI jitter和标准化BAM输出。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "HMFTools AMBER",
+                  "推荐版本": "4.3",
+                  "功能描述": "B-allele frequency与杂合位点分析模块，为PURPLE提供纯度、倍性和拷贝数解释输入。"
+                },
+                {
+                  "序号": "12",
+                  "软件名称": "HMFTools COBALT",
+                  "推荐版本": "3.0",
+                  "功能描述": "基于read depth和GC校正的拷贝数准备模块，为PURPLE提供覆盖度与拷贝数信息。"
+                },
+                {
+                  "序号": "13",
+                  "软件名称": "HMFTools ESVEE",
+                  "推荐版本": "2.0",
+                  "功能描述": "结构变异检测模块，用于肿瘤-正常配对WGS的断点、断裂端和SV VCF生成。"
+                },
+                {
+                  "序号": "14",
+                  "软件名称": "HMFTools SAGE",
+                  "推荐版本": "5.0",
+                  "功能描述": "小变异检测模块，用于体细胞SNV/indel和配套germline panel VCF生成。"
+                },
+                {
+                  "序号": "15",
+                  "软件名称": "HMFTools PAVE",
+                  "推荐版本": "1.9",
+                  "功能描述": "变异注释模块，用于对SAGE产生的somatic和germline VCF进行功能注释。"
+                },
+                {
+                  "序号": "16",
+                  "软件名称": "HMFTools PURPLE",
+                  "推荐版本": "4.4",
+                  "功能描述": "整合分析模块，用于综合AMBER、COBALT、ESVEE和PAVE结果，输出纯度、倍性、拷贝数、体细胞SNV/indel与SV结果。"
+                },
+                {
+                  "序号": "17",
+                  "软件名称": "HMFTools SIGS",
+                  "推荐版本": "1.2.1",
+                  "功能描述": "突变签名分析模块，用于基于最终体细胞VCF估计突变签名贡献。"
+                },
+                {
+                  "序号": "18",
+                  "软件名称": "HMFTools LINX",
+                  "推荐版本": "2.3",
+                  "功能描述": "结构变异解释模块，用于融合基因、复杂重排、driver事件和可视化数据解析。"
+                },
+                {
+                  "序号": "19",
+                  "软件名称": "HMFTools LILAC",
+                  "推荐版本": "2.0",
+                  "功能描述": "HLA和MHC-I分析模块，用于肿瘤-正常WGS的免疫相关HLA分型与等位基因分析。"
+                },
+                {
+                  "序号": "20",
+                  "软件名称": "HMFTools bam-tools",
+                  "推荐版本": "1.5",
+                  "功能描述": "HMFTools配套BAM处理组件，在配置文件中作为容器内可用jar登记。"
+                },
+                {
+                  "序号": "21",
+                  "软件名称": "Circos",
+                  "推荐版本": "/",
+                  "功能描述": "环形基因组可视化工具，由PURPLE调用以生成肿瘤基因组结构展示。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 4,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 16,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38（GRCh38_masked_exclusions_alts_hlas.fasta）"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GRCh38 hmf_pipeline_resources.38_v2.3.0--2/common/ensembl_data"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "fastp -i/-I（输入R1/R2原始FASTQ） -o/-O（输出过滤后R1/R2 FASTQ） -w 8（线程数） --html（HTML质控报告） --json（JSON质控报告）"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "FastQC -t 8（线程数） -o data/{lane}（过滤后FASTQ质控报告输出目录）"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "比对参数",
+                  "主要参数": "bwa-mem2 mem -Y（supplementary alignment使用soft clipping） -K 100000000（批处理碱基数） -t 8（比对线程数）"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "BAM处理参数",
+                  "主要参数": "Sambamba view --sam-input（SAM输入） --format bam（BAM输出） --compression-level 0（低压缩以提高速度） --nthreads 8（线程数）；Sambamba sort --tmpdir tmp（临时目录） --out（排序BAM输出）"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "BAM处理参数",
+                  "主要参数": "SAMtools merge -@ 10（样本内lane BAM合并线程数） addreplacerg -r（添加ID/LB/SM/PL read group） sort -@ 20 -n（按read name排序） sort -@ 4（坐标排序） view -S -b --threads 7（SAM转BAM线程数） index -@ 8（索引线程数）"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "BAM处理参数",
+                  "主要参数": "Samblaster --excludeDups（排除重复reads） --addMateTags（添加mate相关标签） --ignoreUnmated（忽略未配对reads） --maxSplitCount 2（最大split-read数量） --minNonOverlap 20（split-read最小非重叠长度）"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "预处理参数",
+                  "主要参数": "Redux -form_consensus（生成一致性处理结果） -ref_genome_version 38（参考基因组版本） -ref_genome_msi_file（MSI jitter位点文件） -unmap_regions（不可比对区域文件） -bamtool samtools（BAM工具） -threads 8（线程数）"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "拷贝数参数",
+                  "主要参数": "AMBER -tumor ES_029T（肿瘤样本ID） -reference ES_029N（匹配正常样本ID） -loci AmberGermlineSites.38.tsv.gz（杂合位点资源） -threads 32（线程数）"
+                },
+                {
+                  "序号": "11",
+                  "分析步骤": "拷贝数参数",
+                  "主要参数": "COBALT -tumor ES_029T（肿瘤样本ID） -reference ES_029N（匹配正常样本ID） -gc_profile GC_profile.1000bp.38.cnp（GC校正profile） -threads 32（线程数）"
+                },
+                {
+                  "序号": "12",
+                  "分析步骤": "结构变异参数",
+                  "主要参数": "ESVEE -known_hotspot_file（已知融合位点） -pon_sgl_file（single breakend PON） -pon_sv_file（SV PON） -repeat_mask_file（RepeatMasker注释） -unmap_regions（不可比对区域） -write_types PREP_JUNCTION;PREP_BAM;FRAGMENT_LENGTH_DIST;JUNC_ASSEMBLY;PHASED_ASSEMBLY;ALIGNMENT;BREAKEND;VCF（输出类型） -threads 32（线程数）"
+                },
+                {
+                  "序号": "13",
+                  "分析步骤": "小变异参数",
+                  "主要参数": "SAGE somatic -ref_sample_count 1（匹配正常样本数） -hotspots KnownHotspots.somatic.38.vcf.gz（体细胞热点） -driver_gene_panel（驱动基因面板） -high_confidence_bed（高置信区域） -ensembl_data_dir（Ensembl注释目录） -gnomad_freq_dir（gnomAD频率资源） -run_tinc（运行肿瘤污染校正） -write_fit_variants（写出拟合变异） -pon_file（SAGE PON） -include_mt（包含线粒体） -threads 32（线程数）"
+                },
+                {
+                  "序号": "14",
+                  "分析步骤": "小变异参数",
+                  "主要参数": "SAGE germline -ref_sample_count 0（germline panel模式参考样本数） -germline（启用germline模式） -panel_only（仅输出panel相关位点） -hotspots KnownHotspots.germline.38.vcf.gz（germline热点） -threads 32（线程数）"
+                },
+                {
+                  "序号": "15",
+                  "分析步骤": "注释参数",
+                  "主要参数": "PAVE somatic -driver_gene_panel（驱动基因面板） -mappability_bed（可比对性区域） -ensembl_data_dir（Ensembl注释目录） -pon_file（SAGE PON） -clinvar_vcf（ClinVar注释） -gnomad_freq_dir（gnomAD频率资源） -threads 32（线程数）\n注释参数：PAVE germline -driver_gene_panel（驱动基因面板） -mappability_bed（可比对性区域） -blacklist_bed/-blacklist_vcf（germline黑名单区域/位点） -clinvar_vcf（ClinVar注释） -gnomad_no_filter（不按gnomAD过滤） -threads 32（线程数）\n整合参数：PURPLE -amber（AMBER输出目录） -cobalt（COBALT输出目录） -somatic_sv_vcf/-germline_sv_vcf（ESVEE结构变异VCF） -somatic_vcf/-germline_vcf（PAVE注释VCF） -driver_gene_panel（驱动基因面板） -ensembl_data_dir（Ensembl注释目录） -gc_profile（GC profile） -circos（Circos路径） -threads 32（线程数）"
+                },
+                {
+                  "序号": "16",
+                  "分析步骤": "下游参数",
+                  "主要参数": "SIGS -signatures_file snv_cosmic_signatures.csv（COSMIC SNV突变签名矩阵）"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 5,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 19,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：定义最终输出目标，包括PURPLE体细胞SNV/indel VCF、结构变异VCF及可选SIGS/LINX/LILAC完成标记。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "fastp：对每个lane的双端FASTQ进行过滤和质控，生成过滤后FASTQ及HTML/JSON报告。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "qc_after_filtered：对fastp过滤后的FASTQ执行FastQC，生成可选的过滤后质量评估报告。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "bwa_mem：使用bwa-mem2将过滤后reads比对到GRCh38，并通过Sambamba转换和排序为lane级BAM。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "samtools_merge：按样本合并多个lane BAM，并添加read group信息。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "sort_bam：对样本BAM进行name sort、Samblaster重复/split-read处理、坐标排序和BAM输出。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "sambamba_index_bam：为排序后的样本BAM生成BAM索引。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "redux：执行HMFTools Redux预处理，生成Redux BAM、BAM索引、BQR、jitter和microsatellite表。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "amber：基于肿瘤-正常配对BAM和杂合位点资源生成B-allele frequency相关结果。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "cobalt：基于肿瘤-正常配对BAM和GC profile生成read depth与拷贝数准备结果。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "esvee：检测结构变异并输出断点、断裂端及somatic/germline SV VCF。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "sage_somatic：基于Redux BAM、PON、热点、gnomAD和注释资源检测体细胞SNV/indel。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "sage_germline：生成匹配流程所需的germline panel VCF。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "pave_somatic：对SAGE体细胞VCF进行PAVE功能注释。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "pave_germline：对SAGE germline VCF进行PAVE功能注释。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "purple：整合AMBER、COBALT、ESVEE和PAVE结果，输出最终体细胞SNV/indel、SV、纯度、倍性和拷贝数解释结果。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "sigs：在run.sigs为true时，根据PURPLE最终体细胞VCF进行突变签名分析。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "linx：在run.linx为true时，根据PURPLE结构变异和整合结果解析融合、driver事件和复杂重排。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "lilac：在run.lilac为true且lilac_resources存在时，执行HLA和MHC-I相关分析。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "1.3_somatic_wes",
+          "title": "1.3 somatic WES数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "somatic WES数据分析的标准流程是指从原始WES测序数据出发，最终获得体细胞SNV/Indel、SV和CNV结果的过程，通常包括实验设计与质控、比对、体细胞变异检测、注释与报告等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 6,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 16,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "工作流调度系统，用于按依赖关系自动执行somatic WES分析规则。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity/Apptainer",
+                  "推荐版本": "4.0.1",
+                  "功能描述": "容器运行环境，用于保证各分析步骤的软件环境一致。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "/",
+                  "功能描述": "FASTQ接头去除与质量修剪工具，默认使用trim_galore。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "fastp",
+                  "推荐版本": "0.23.4",
+                  "功能描述": "可选FASTQ预处理工具，可输出HTML和JSON质控报告并提供Q30统计。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.12.1",
+                  "功能描述": "FASTQ质量评估工具，生成修剪后reads的HTML和zip质控结果。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "BWA",
+                  "推荐版本": "0.7.17",
+                  "功能描述": "BWA-MEM短读长比对工具，将WES reads比对到GRCh38参考基因组。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.19",
+                  "功能描述": "SAM/BAM/CRAM处理工具，用于BAM排序、索引和flagstat/stats/idxstats统计。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "GATK",
+                  "推荐版本": "4.5.0.0",
+                  "功能描述": "基因组分析工具包，用于MarkDuplicates、BQSR、Mutect2、污染估计和体细胞变异过滤。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "bcftools",
+                  "推荐版本": "1.19",
+                  "功能描述": "VCF/BCF处理工具，用于VCF索引、PASS提取、标准化和变异统计。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "HTSlib",
+                  "推荐版本": "1.19",
+                  "功能描述": "高通量测序文件底层读写库，为samtools、bcftools和tabix/bgzip提供支持。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "Ensembl VEP",
+                  "推荐版本": "cache 113",
+                  "功能描述": "变异功能注释工具，使用GRCh38离线缓存进行SNV/Indel注释。"
+                },
+                {
+                  "序号": "12",
+                  "软件名称": "LUMPY/lumpyexpress",
+                  "推荐版本": "/",
+                  "功能描述": "基于discordant pair和split read证据的结构变异检测工具。"
+                },
+                {
+                  "序号": "13",
+                  "软件名称": "CNVkit",
+                  "推荐版本": "0.9+兼容版本",
+                  "功能描述": "WES/靶向测序拷贝数变异分析工具，用于tumor-normal CNV检测。"
+                },
+                {
+                  "序号": "14",
+                  "软件名称": "bedtools",
+                  "推荐版本": "2.31+兼容版本",
+                  "功能描述": "基因组区间操作工具，用于SV和CNV结果与gene_bed重叠注释。"
+                },
+                {
+                  "序号": "15",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "1.20",
+                  "功能描述": "多软件质控汇总工具，用于整合FastQC、BAM QC和流程统计结果。"
+                },
+                {
+                  "序号": "16",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "用于LUMPY VCF清洗、报告统计收集、绘图和HTML报告渲染。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 7,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 18,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 Homo_sapiens_assembly38 chr1-22XY"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GRCh38 VEP cache 113；GENCODE v27 primary assembly gene BED/RefFlat"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "Trim Galore参数",
+                  "主要参数": "--paired（双端reads模式） --fastqc（修剪后执行FastQC） --cores 16（预处理线程数） --basename（按样本ID统一输出文件名前缀）"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "FastQC参数",
+                  "主要参数": "-t 16（并行线程数） -o results/<pair_id>/qc（质控结果输出目录）"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "BWA-MEM参数",
+                  "主要参数": "-t 16（比对线程数） -R（写入read group信息，包括ID、SM、PL和LB）"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "SAMtools参数",
+                  "主要参数": "sort -@ 16（BAM排序线程数） index -@ 16（BAM索引线程数） flagstat/stats/idxstats（输出BAM比对质量、插入片段和染色体分布统计）"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "GATK MarkDuplicates参数",
+                  "主要参数": "--CREATE_INDEX false（该步骤不直接创建索引） --TMP_DIR（指定临时目录） -M（输出重复序列统计文件）"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "GATK BaseRecalibrator/ApplyBQSR参数",
+                  "主要参数": "-L interval_list（限制到WES分析区间） --known-sites known_sites（BQSR已知变异资源） --tmp-dir（临时目录）"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "GATK Mutect2参数",
+                  "主要参数": "--native-pair-hmm-threads 16（PairHMM线程数） -L interval_list（WES区间） --germline-resource pop_af_resource（群体频率资源） --panel-of-normals pon_path（可选PON） --f1r2-tar-gz（方向偏好模型输入） --bam-output（可选输出bamout）"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "GATK GetPileupSummaries参数",
+                  "主要参数": "-V common_variants（常见变异资源） -L interval_list与-L common_variants（取交集区间） --interval-set-rule INTERSECTION（仅统计交集区域）"
+                },
+                {
+                  "序号": "11",
+                  "分析步骤": "GATK CalculateContamination参数",
+                  "主要参数": "--matched-normal（使用配对正常样本估计污染） --tumor-segmentation（输出肿瘤分段表）"
+                },
+                {
+                  "序号": "12",
+                  "分析步骤": "GATK LearnReadOrientationModel参数",
+                  "主要参数": "-I f1r2.tar.gz（Mutect2输出的F1R2证据） -O read-orientation-model.tar.gz（方向偏好先验模型）"
+                },
+                {
+                  "序号": "13",
+                  "分析步骤": "GATK FilterMutectCalls参数",
+                  "主要参数": "--contamination-table（污染率表） --tumor-segmentation（肿瘤分段表） --ob-priors（方向偏好先验） --min-median-mapping-quality 35（最小中位比对质量） --max-alt-allele-count 3（正常样本ALT支持上限）"
+                },
+                {
+                  "序号": "14",
+                  "分析步骤": "bcftools参数",
+                  "主要参数": "view -f PASS（提取PASS体细胞变异） norm -f ref_path -m-any（按参考基因组左对齐并拆分多等位位点） index -f -t（生成tabix索引）"
+                },
+                {
+                  "序号": "15",
+                  "分析步骤": "VEP参数",
+                  "主要参数": "--species homo_sapiens（人类物种） --assembly GRCh38（参考组装） --dir_cache cache_dir（离线缓存目录） --cache_version 113（缓存版本） --cache --offline --everything --pick（离线全面注释并选择代表性转录本） --fork 4（注释线程数）"
+                },
+                {
+                  "序号": "16",
+                  "分析步骤": "LUMPY参数",
+                  "主要参数": "-B（tumor和normal BQSR BAM列表） -S（splitters BAM列表） -D（discordants BAM列表） -m 4（最小样本支持权重） -r 0（trim阈值） -k（保留临时信息） -T（临时目录）"
+                },
+                {
+                  "序号": "17",
+                  "分析步骤": "CNVkit参数",
+                  "主要参数": "batch --method hybrid（WES/捕获测序模式） --segment-method cbs（CBS分段） call --ploidy 2（二倍体基线） -m clonal（克隆模型） --drop-low-coverage（过滤低覆盖片段） genemetrics --threshold 0.2（基因层面log2阈值） --min-probes 3（最少探针数）"
+                },
+                {
+                  "序号": "18",
+                  "分析步骤": "MultiQC参数",
+                  "主要参数": "--interactive（生成交互式HTML） --exclude gatk（跳过MultiQC的GATK模块，避免BQSR表兼容性报错） -f（覆盖既有结果）"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 8,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 32,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：定义完整流程最终目标，包括FastQC、BAM、SNV/Indel、SV、CNV、MultiQC和HTML报告结果。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "validate_config：检查肿瘤/正常FASTQ、参考基因组、索引、interval_list、known_sites和注释资源是否存在。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "target_bed_from_interval_list：当未提供target_bed时，将interval_list转换为按染色体和坐标排序的BED文件。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "trim_reads：对肿瘤和正常FASTQ执行接头去除与质量修剪，支持trim_galore或fastp。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "fastqc_trimmed：对修剪后的R1/R2 FASTQ运行FastQC，生成HTML和zip质控文件。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "bwa_mem_sort：使用BWA-MEM比对reads，并通过samtools sort生成坐标排序BAM及索引。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "mark_duplicates：使用GATK MarkDuplicates标记PCR/光学重复，并输出重复率统计。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "apply_bqsr：使用known_sites执行BQSR建模和ApplyBQSR，生成分析用BQSR BAM。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "bam_qc：使用samtools flagstat、stats和idxstats统计BAM比对质量和染色体分布。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "mutect2_call：使用GATK Mutect2对肿瘤-正常配对样本进行体细胞SNV/Indel初始检测。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "pileup_summaries：基于common_variants分别统计肿瘤和正常样本pileup信息。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "calculate_contamination：使用肿瘤和匹配正常pileup结果估计污染率并生成肿瘤分段表。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "learn_read_orientation_model：根据Mutect2 F1R2证据学习read orientation bias模型。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "filter_mutect_calls：结合污染率、方向偏好和质量阈值过滤Mutect2体细胞变异。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "pass_somatic_vcf：从filtered VCF中提取FILTER为PASS的体细胞变异并建立索引。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "normalize_somatic_vcf：使用bcftools norm对PASS VCF进行左对齐、规范化和多等位拆分。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "annotate_snv_indel：使用离线VEP缓存对标准化后的PASS SNV/Indel VCF进行功能注释。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "summarize_snv_indels：统计unfiltered、filtered、PASS、normalized和annotated VCF的记录数、SNV/Indel数量及过滤标签。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "sv_evidence：从BQSR BAM提取LUMPY所需的discordant reads和split reads证据。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "lumpy_somatic_sv：使用lumpyexpress对肿瘤-正常配对样本进行结构变异候选检测。"
+                },
+                {
+                  "序号": "规则二十一",
+                  "内容": "filter_sort_lumpy_sv：清洗、压缩、排序并索引LUMPY PASS SV VCF。"
+                },
+                {
+                  "序号": "规则二十二",
+                  "内容": "annotate_sv：将SV结果转换为区间并与gene_bed求交，生成SV基因重叠注释表。"
+                },
+                {
+                  "序号": "规则二十三",
+                  "内容": "cnvkit_batch：使用CNVkit batch在tumor-normal模式下生成CNV reference、CNR和CNS。"
+                },
+                {
+                  "序号": "规则二十四",
+                  "内容": "cnvkit_call：结合过滤VCF、倍性和纯度参数，对CNVkit分段结果进行拷贝数状态调用。"
+                },
+                {
+                  "序号": "规则二十五",
+                  "内容": "cnvkit_export：导出CNV VCF、BED、SEG、metrics、scatter和diagram结果。"
+                },
+                {
+                  "序号": "规则二十六",
+                  "内容": "cnvkit_genemetrics：生成基因层面的CNVkit genemetrics统计结果。"
+                },
+                {
+                  "序号": "规则二十七",
+                  "内容": "annotate_cnv：将CNV VCF转换为区间并与gene_bed求交，生成CNV基因重叠注释表。"
+                },
+                {
+                  "序号": "规则二十八",
+                  "内容": "multiqc：汇总FastQC、BAM QC、SNV/Indel、SV和CNV相关统计，生成MultiQC HTML报告。"
+                },
+                {
+                  "序号": "规则二十九",
+                  "内容": "collect_report_statistics：收集样本、BAM、VCF、SV、CNV和MultiQC统计信息，生成报告JSON。"
+                },
+                {
+                  "序号": "规则三十",
+                  "内容": "prepare_report_figures：根据报告JSON绘制质控、变异过滤、VAF/TLOD和CNV分布图。"
+                },
+                {
+                  "序号": "规则三十一",
+                  "内容": "render_html_report：整合统计JSON、图形manifest和WES_css.md模板，生成中文或英文HTML报告。"
+                },
+                {
+                  "序号": "规则三十二",
+                  "内容": "report_only：作为仅生成报告的目标规则，依赖最终HTML报告。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_2_",
+      "title": "2. 转录组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "2.1_bulk/smart-seq",
+          "title": "2.1 bulk/smart-seq转录组数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "Bulk转录组数据分析的标准流程是指从原始转录组测序数据出发，最终获得基因或转录组表达矩阵的过程，通常包括实验设计与质控、比对、定量、标准化等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 9,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Fasterq-dump",
+                  "推荐版本": "3.2.1",
+                  "功能描述": "SRA数据库高速下载工具，将SRA格式文件快速转换为FASTQ或FASTA格式，支持多线程和压缩输出。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Fastp",
+                  "推荐版本": "1.0.1",
+                  "功能描述": "一站式FASTQ数据预处理工具，自动进行质量修剪、接头去除、长度过滤、碱基校正，生成详细质控报告。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "RSeQC",
+                  "推荐版本": "5.0.4",
+                  "功能描述": "RNA-seq质量控制模块包，提供基因覆盖度、插入片段分布、链特异性、read分布均匀性等多项质控指标。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.22.1",
+                  "功能描述": "处理SAM/BAM/CRAM格式文件的工具集，包括格式转换、排序、索引、变异 calling、比对质量统计等。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "HISAT2",
+                  "推荐版本": "2.2.1",
+                  "功能描述": "序列快速比对，使用分层索引策略高效比对RNA-seq reads，支持基因组和转录组水平的快速比对。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "STAR",
+                  "推荐版本": "2.7.11b",
+                  "功能描述": "序列比对，将RNA-seq reads快速、准确地比对到参考基因组，支持长读长与高容错率，输出BAM文件用于下游定量。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "RSEM",
+                  "推荐版本": "1.2.28",
+                  "功能描述": "转录本定量工具，从比对结果中估算基因和转录本的表达量（raw counts/TPM/FPKM）。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 10,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 3,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 v99"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GRCh38 v99"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "fastp -q（碱基质量阈值） 20 -u（允许的N碱基比例上限） 40 -l（过滤后reads的最小长度） 50 -g（自动检测并校正reads的碱基分布偏差） -x（针对polyG/polyX等问题进行校正） -r（删除由简单重复序列组成的reads） -W（滑动窗口大小） 4 -M（窗口平均质量阈值） 20"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 11,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 9,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "SRA转FASTQ"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "合并FASTQ文件"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "fastp质量控制"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "hisat2比对"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "SAM转BAM"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "推断链特异性"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "计算链特异性值"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "RSEM定量"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "生成表达矩阵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "2.2_10x",
+          "title": "2.2 10X转录组数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "基于10X Genomics平台产生的单细胞测序数据，通过构建标准化的生物信息学分析流程，实现从原始测序数据到细胞水平表达图谱的完整解析，以揭示组织或样本中细胞的异质性及其功能状态。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 12,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 1,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Cell Ranger",
+                  "推荐版本": "7.1.0",
+                  "功能描述": "将原始测序读段比对到参考基因组，完成样本拆分、细胞和基因的定量计数，最终生成可供下游分析使用的基因表达矩阵及可视化结果"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 13,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 9,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "SRA转FASTQ",
+                  "主要参数": "fasterq-dump --split-files --include-technical -e 30"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "Cell Ranger参考基因组",
+                  "主要参数": "--transcriptome  Caenorhabditis_elegans.WBcel235"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "Cell Ranger count",
+                  "主要参数": "--id {sample}、--sample {sample}、--fastqs {fastq_dir}、--transcriptome {ref}"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "线程与内存",
+                  "主要参数": "--localcores 20、--localmem 90"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "建库化学版本",
+                  "主要参数": "--chemistry auto，由 Cell Ranger 自动识别文库类型。"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "BAM输出",
+                  "主要参数": "create_bam: null，未显式传入 --create-bam，保持 Cell Ranger 默认行为"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "细胞数设置",
+                  "主要参数": "expect_cells: null、force_cells: null，未指定细胞数，由 Cell Ranger 自动判断"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "二级分析",
+                  "主要参数": "no_secondary: false，未启用 --nosecondary，保留 Cell Ranger 默认二级分析"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "结果检查",
+                  "主要参数": "检查 outs/web_summary.html 和 outs/filtered_feature_bc_matrix/ 是否存在"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 14,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 6,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all 汇总流程最终目标输出，以每个样本的 Cell Ranger 完成标志文件作为最终目标，确保所有样本完成 10x 单细胞转录组分析。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": ""
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "sra_to_fastq 针对 SRA 输入数据，调用 fasterq-dump 将原始 SRA 文件转换为 FASTQ 文件，并保留 technical reads 以满足 10x 单细胞数据分析需求。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "prepare_fastq 对 FASTQ 文件进行标准化整理，自动识别 R1、R2 和 I1 文件，并将多个 run 或 lane 的 FASTQ 合并为 Cell Ranger 可识别的标准命名格式。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "cellranger_count 调用 Cell Ranger count 完成 reads 比对、barcode/UMI 处理、细胞识别、基因表达定量和表达矩阵生成。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "cellranger_count 结果检查通过检测 web_summary.html 和 filtered_feature_bc_matrix 是否存在，判断单细胞表达矩阵和 HTML 质控报告是否成功生成。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "2.3_rna-seq_fusion",
+          "title": "2.3 RNA-seq fusion数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "RNA-seq融合基因数据分析的标准流程是指从原始RNA-seq测序数据出发，最终获得融合基因检测、汇总和可视化结果的过程，通常包括实验设计与质控、比对、融合检测等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 15,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 17,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.12.1",
+                  "功能描述": "FASTQ质量控制工具，用于评估原始和修剪后reads的碱基质量、序列组成、接头污染等指标。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "fastp",
+                  "推荐版本": "0.24.0",
+                  "功能描述": "FASTQ预处理工具，用于接头处理、低质量序列过滤、可选3'端修剪及HTML/JSON质控报告生成。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "STAR",
+                  "推荐版本": "2.7.8a",
+                  "功能描述": "剪接感知RNA-seq比对工具，用于生成排序BAM、SJ.out.tab、Chimeric.out.junction和基因计数文件。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "Arriba",
+                  "推荐版本": "2.1.0",
+                  "功能描述": "基于STAR比对结果的融合基因检测工具，用于输出融合候选及过滤记录。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "STAR-Fusion",
+                  "推荐版本": "1.15.1",
+                  "功能描述": "基于STAR嵌合junction和CTAT参考库的融合转录本检测工具。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "FusionCatcher",
+                  "推荐版本": "1.33b",
+                  "功能描述": "RNA-seq融合基因检测工具，用于检测已知和潜在融合事件；本流程参考库为human_v102。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "StringTie",
+                  "推荐版本": "2.2.3",
+                  "功能描述": "转录本组装和定量工具，用于生成样本级转录本GTF、基因丰度和覆盖度文件。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "CTAT-Splicing",
+                  "推荐版本": "0.0.2",
+                  "功能描述": "癌症相关异常剪接检测工具，用于基于STAR junction和BAM识别异常内含子事件。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "fusion-report",
+                  "推荐版本": "4.0.1",
+                  "功能描述": "融合结果汇总工具，用于整合Arriba、STAR-Fusion和FusionCatcher结果并生成TSV、HTML和CSV报告。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "FusionInspector",
+                  "推荐版本": "2.11.3",
+                  "功能描述": "融合转录本验证工具，用于对候选融合进行reads证据验证、注释和可视化。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "AGAT",
+                  "推荐版本": "1.7.0",
+                  "功能描述": "GTF/GFF转换工具，本流程用于FusionInspector GTF到TSV的转换。"
+                },
+                {
+                  "序号": "12",
+                  "软件名称": "Picard",
+                  "推荐版本": "/",
+                  "功能描述": "测序质量指标统计工具，用于CollectRnaSeqMetrics和CollectInsertSizeMetrics。"
+                },
+                {
+                  "序号": "13",
+                  "软件名称": "GATK",
+                  "推荐版本": "4.6.1.0",
+                  "功能描述": "基因组分析工具集，本流程用于MarkDuplicates并输出重复率指标。"
+                },
+                {
+                  "序号": "14",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.21",
+                  "功能描述": "SAM/BAM/CRAM处理工具，用于索引、统计和BAM到CRAM转换。"
+                },
+                {
+                  "序号": "15",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "1.30",
+                  "功能描述": "多工具质控汇总工具，用于生成流程级HTML质控报告。"
+                },
+                {
+                  "序号": "16",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "工作流管理工具，用于根据输入、输出和依赖关系调度各分析规则。"
+                },
+                {
+                  "序号": "17",
+                  "软件名称": "Singularity/Apptainer",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "容器运行环境，用于执行Snakemake原生container规则。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 16,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 16,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 GENCODE v46"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GRCh38 GENCODE v46"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "FastQC --quiet（静默运行） --threads（线程数） --outdir（报告输出目录）"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "fastp --detect_adapter_for_pe（双端接头自动识别） --adapter_fasta（可选接头文件） --trim_tail1/--trim_tail2（可选3'端修剪） --json/--html（报告输出）"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "比对参数",
+                  "主要参数": "STAR --genomeDir（STAR索引） --sjdbGTFfile（GTF注释，除非star_ignore_sjdbgtf为true） --outSAMtype BAM SortedByCoordinate（排序BAM） --quantMode GeneCounts（基因计数） --chimOutType Junctions WithinBAM（嵌合junction输出）"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "融合检测参数",
+                  "主要参数": "Arriba -x（STAR BAM） -a（参考FASTA） -g（GTF注释） -b（blacklist） -k（known fusions） -d（cytobands） -p（protein domains）"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "融合检测参数",
+                  "主要参数": "STAR-Fusion --genome_lib_dir（CTAT参考库） -J（STAR Chimeric.out.junction） --CPU（线程数）"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "融合检测参数",
+                  "主要参数": "FusionCatcher --data（human_v102参考库） --limitSjdbInsertNsj（STAR junction插入上限，默认2000000） --skip-blat（跳过BLAT） --Xmx（Java内存）"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "转录本组装参数",
+                  "主要参数": "StringTie -G（参考GTF） -A（基因丰度） -C（覆盖度） -b（Ballgown目录） -p（线程数）"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "剪接异常参数",
+                  "主要参数": "CTAT-Splicing --SJ_tab_file（SJ.out.tab） --chimJ_file（Chimeric.out.junction） --bam_file（STAR BAM） --ctat_genome_lib（CTAT参考库） --vis（可视化输出）"
+                },
+                {
+                  "序号": "11",
+                  "分析步骤": "融合汇总参数",
+                  "主要参数": "fusion_report --tool-cutoff（至少N个工具支持，默认1） --allow-multiple-gene-symbols（允许多个基因符号） --export csv（导出CSV）"
+                },
+                {
+                  "序号": "12",
+                  "分析步骤": "融合验证参数",
+                  "主要参数": "FusionInspector --genome_lib（CTAT参考库） --vis（HTML可视化） --annotate（注释） --examine_coding_effect（编码影响分析） --STAR_xtra_params（可选STAR额外参数）"
+                },
+                {
+                  "序号": "13",
+                  "分析步骤": "指标收集参数",
+                  "主要参数": "Picard CollectRnaSeqMetrics --STRAND_SPECIFICITY（链特异性） --REF_FLAT（refFlat注释） --RIBOSOMAL_INTERVALS（rRNA intervals，可选）"
+                },
+                {
+                  "序号": "14",
+                  "分析步骤": "指标收集参数",
+                  "主要参数": "GATK MarkDuplicates --INPUT（STAR BAM） --OUTPUT（标记重复BAM） --METRICS_FILE（重复率指标；主融合分析仍使用STAR BAM）"
+                },
+                {
+                  "序号": "15",
+                  "分析步骤": "压缩参数",
+                  "主要参数": "SAMtools view -C -T（按参考FASTA将BAM转为CRAM） samtools index（建立索引）"
+                },
+                {
+                  "序号": "16",
+                  "分析步骤": "报告参数",
+                  "主要参数": "MultiQC --force（覆盖已有报告） --outdir（输出目录） --filename（报告文件名） --config（可选配置） --title（可选标题）"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 17,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 25,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：汇总最终目标文件，不执行具体分析命令。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "validate_samplesheet：校验样本表并输出标准化样本信息。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "localize_fastq：将本地或URL FASTQ定位到流程工作目录。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "fastqc_raw：对原始FASTQ执行FastQC质控。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "fastp_se：对单端FASTQ执行fastp预处理。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "fastp_pe：对双端FASTQ执行fastp预处理。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "fastqc_trim：对fastp输出FASTQ执行FastQC质控。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "star_align：使用STAR比对reads并输出BAM、junction和统计文件。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "arriba：使用Arriba检测融合基因。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "starfusion：使用STAR-Fusion检测融合转录本。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "fastp_for_fusioncatcher_se：当trim_tail_fusioncatcher>0时，对单端数据执行FusionCatcher专用修剪。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "fastp_for_fusioncatcher_pe：当trim_tail_fusioncatcher>0时，对双端数据执行FusionCatcher专用修剪。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "fusioncatcher：使用FusionCatcher检测融合基因，并跳过不支持的短单端数据。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "stringtie：执行样本级转录本组装和定量。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "stringtie_merge：合并各样本StringTie转录本组装结果。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "ctatsplicing：检测癌症相关异常剪接事件。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "fusionreport：整合多工具融合结果并生成TSV、HTML和CSV报告。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "fusioninspector：验证和注释候选融合并生成可视化结果。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "vcf_collect：整合FusionInspector和fusion-report结果生成VCF。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "arriba_visualisation：基于FusionInspector确认结果生成Arriba PDF可视化。"
+                },
+                {
+                  "序号": "规则二十一",
+                  "内容": "picard_rnaseq_metrics：收集RNA-seq质量指标。"
+                },
+                {
+                  "序号": "规则二十二",
+                  "内容": "gatk_markduplicates：标记重复并输出重复率指标。"
+                },
+                {
+                  "序号": "规则二十三",
+                  "内容": "picard_insert_size：统计双端数据插入片段大小。"
+                },
+                {
+                  "序号": "规则二十四",
+                  "内容": "bam_to_cram：将STAR BAM压缩为CRAM并建立索引。"
+                },
+                {
+                  "序号": "规则二十五",
+                  "内容": "multiqc：汇总质控和比对指标生成MultiQC报告。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "2.4_rna-seq_splice",
+          "title": "2.4 RNA-seq splice数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "RNA-seq可变剪接数据分析的标准流程是指从原始RNA-seq测序数据出发，最终获得可变剪接事件和差异剪接结果的过程，通常包括实验设计与质控、比对定量、剪接事件检测和差异分析等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 18,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 17,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "流程管理工具，根据Snakefile中的规则自动解析依赖关系并调度RNA-seq可变剪接分析任务。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity/Apptainer",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "容器运行环境，用于加载rnasplice_latest.sif并保证流程软件环境一致。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.12.1",
+                  "功能描述": "高通量测序reads质量评估工具，用于生成原始和修剪后FASTQ的质量控制报告。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "0.6.7",
+                  "功能描述": "基于Cutadapt和FastQC的接头去除与质量修剪工具，用于获得清洁reads。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "STAR",
+                  "推荐版本": "2.7.10a",
+                  "功能描述": "RNA-seq剪接感知比对工具，用于将reads比对到参考基因组并输出基因组BAM和转录组BAM。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.16.1/1.17",
+                  "功能描述": "SAM/BAM/CRAM处理工具，本流程主要用于坐标排序BAM的索引。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "Salmon",
+                  "推荐版本": "1.10.1",
+                  "功能描述": "转录本定量工具，用于基于STAR transcriptome BAM或FASTQ估算转录本丰度。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "Subread featureCounts",
+                  "推荐版本": "2.0.1",
+                  "功能描述": "基因组功能区域计数工具，用于exon-level read计数并支持edgeR外显子使用分析。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "edgeR",
+                  "推荐版本": "3.36.0",
+                  "功能描述": "Bioconductor差异分析包，用于差异外显子表达和差异外显子使用分析。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "DEXSeq",
+                  "推荐版本": "1.36.0",
+                  "功能描述": "Bioconductor差异外显子使用分析包，用于DEU和DTU统计建模。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "DRIMSeq",
+                  "推荐版本": "1.18.0",
+                  "功能描述": "Dirichlet-multinomial框架的转录本使用过滤与建模工具，在本流程中用于DTU输入过滤。"
+                },
+                {
+                  "序号": "12",
+                  "软件名称": "tximport",
+                  "推荐版本": "随tximeta 1.8.0容器提供",
+                  "功能描述": "R包，用于汇总Salmon定量结果并生成transcript/gene层面的counts和TPM矩阵。"
+                },
+                {
+                  "序号": "13",
+                  "软件名称": "rMATS",
+                  "推荐版本": "4.1.2",
+                  "功能描述": "可变剪接事件差异分析工具，用于基于BAM检测SE、A5SS、A3SS、MXE、RI等事件。"
+                },
+                {
+                  "序号": "14",
+                  "软件名称": "SUPPA2",
+                  "推荐版本": "2.3",
+                  "功能描述": "基于转录本丰度的剪接事件生成、PSI计算和差异剪接分析工具。"
+                },
+                {
+                  "序号": "15",
+                  "软件名称": "BEDTools",
+                  "推荐版本": "2.30.0",
+                  "功能描述": "基因组区间处理工具，用于从BAM生成bedGraph覆盖度文件。"
+                },
+                {
+                  "序号": "16",
+                  "软件名称": "bedGraphToBigWig",
+                  "推荐版本": "377",
+                  "功能描述": "UCSC工具，用于将排序后的bedGraph覆盖度文件转换为bigWig格式。"
+                },
+                {
+                  "序号": "17",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "1.18",
+                  "功能描述": "多工具质控报告汇总工具，用于整合FastQC、STAR、featureCounts等日志和质控结果。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 19,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 11,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 primary assembly"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GENCODE v49（GRCh38）"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "FastQC -t 8（线程数） -o fastqc_raw/fastqc_trimmed（质控报告输出目录）"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "Trim Galore --paired（双端reads模式） --cores 8（线程数） --basename sample（样本输出前缀） -o trimmed（修剪结果目录）"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "比对参数",
+                  "主要参数": "STAR --runThreadN 8（线程数） --genomeDir data/star（STAR索引目录） --readFilesCommand zcat（读取压缩FASTQ） --outSAMtype BAM SortedByCoordinate（输出坐标排序BAM） --quantMode GeneCounts TranscriptomeSAM（输出基因计数和转录组BAM） --twopassMode Basic（二次比对模式）"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "转录本定量参数",
+                  "主要参数": "Salmon -t data/rsem/genome.transcripts.fa（转录本FASTA） -l A（自动推断文库类型） -a Aligned.toTranscriptome.out.bam（STAR转录组BAM输入） -p 8（线程数） --gcBias（GC偏倚校正） --seqBias（序列偏倚校正）"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "外显子计数参数",
+                  "主要参数": "featureCounts -p --countReadPairs（双端fragment计数） -s 0（非链特异性） -T 8（线程数） -f（feature-level/exon-level计数） -t exon（计数特征类型） -g gene_id（按gene_id分组）"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "DEXSeq计数参数",
+                  "主要参数": "dexseq_count --paired yes（双端数据） --stranded no（非链特异性） --format bam（输入BAM） --order pos（按坐标排序输入）"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "rMATS参数",
+                  "主要参数": "rmats.py -t paired（双端数据） --readLength 100（读长） --nthread 8（线程数） --cstat 0.01（|ΔPSI|检验阈值）"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "SUPPA参数",
+                  "主要参数": "suppa.py generateEvents -e SE SS MX RI FL（配置指定的事件类型） -f ioe（事件输出格式） psiPerEvent（基于TPM计算PSI） diffSplice（按contrast进行差异剪接分析）"
+                },
+                {
+                  "序号": "11",
+                  "分析步骤": "报告参数",
+                  "主要参数": "MultiQC --force（覆盖已有报告） -n rnasplice_snakemake_multiqc（报告名称）"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 20,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 26,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：汇总所有目标输出文件，作为流程最终目标。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "normalize_metadata：标准化样本、对比和输入路径元数据，生成后续规则使用的中间表。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "merge_fastq：合并同一样本多批次或多lane FASTQ文件。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "fastqc_raw：对原始FASTQ进行质量控制。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "trim_paired：对双端FASTQ进行接头去除和低质量序列修剪。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "trim_single：对单端FASTQ进行接头去除和低质量序列修剪。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "pass_fastq_paired：跳过修剪时为双端FASTQ生成标准化链接。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "pass_fastq_single：跳过修剪时为单端FASTQ生成标准化链接。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "fastqc_trimmed：对修剪后的FASTQ进行质量控制。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "star_align：使用STAR进行基因组比对，生成坐标排序BAM、转录组BAM和BAM索引。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "link_genome_bam：对外部或STAR生成的基因组BAM建立标准输出链接并生成索引。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "salmon_from_fastq：使用Salmon从FASTQ直接进行转录本定量。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "salmon_from_transcriptome_bam：使用Salmon从STAR transcriptome BAM进行转录本定量。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "featurecounts_exon：使用featureCounts进行exon-level read计数。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "edger_exon：基于featureCounts结果进行edgeR差异外显子表达和差异外显子使用分析。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "dexseq_annotation：将GTF注释转换为DEXSeq可用的flattened GFF文件。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "dexseq_count：基于BAM和DEXSeq GFF生成外显子计数表。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "dexseq_exon：运行DEXSeq差异外显子使用分析。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "tximport：汇总Salmon quant.sf结果并生成tximport对象、counts矩阵、TPM矩阵和SUPPA输入。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "drimseq_filter：对DTU分析输入进行DRIMSeq过滤。"
+                },
+                {
+                  "序号": "规则二十一",
+                  "内容": "dexseq_dtu：基于过滤后的转录本计数运行DEXSeq差异转录本使用分析。"
+                },
+                {
+                  "序号": "规则二十二",
+                  "内容": "rmats_lists：按contrast生成rMATS所需的case/control BAM列表。"
+                },
+                {
+                  "序号": "规则二十三",
+                  "内容": "rmats：运行rMATS差异可变剪接事件分析。"
+                },
+                {
+                  "序号": "规则二十四",
+                  "内容": "suppa：生成SUPPA剪接事件、PSI矩阵和差异剪接结果。"
+                },
+                {
+                  "序号": "规则二十五",
+                  "内容": "bigwig：使用BEDTools从基因组BAM生成bedGraph，并转换为bigWig覆盖度文件。"
+                },
+                {
+                  "序号": "规则二十六",
+                  "内容": "multiqc：汇总流程日志和质控结果，生成MultiQC HTML报告。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_3_",
+      "title": "3. 空间转录组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "3.1_10x",
+          "title": "3.1 10X Visium FFPE空间转录组数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "10X Visium FFPE空间转录组数据分析的标准流程是指从FFPE组织切片的空间测序数据出发，最终获得基因表达在组织原位空间坐标上的定量分布图谱的过程，通常包括图像与测序数据的空间对齐、探针捕获序列的基因组比对、基因表达定量、空间聚类及差异表达分析等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 21,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 1,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Spaceranger",
+                  "推荐版本": "4.0.1",
+                  "功能描述": "将测序 reads 比对至参考基因组，并利用空间条形码与组织图像的配准算法，精准地将基因表达定量结果映射回组织切片上的空间坐标，从而生成可供后续分析的空间表达矩阵与可视化结果。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 22,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 10,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "10x Genomics mouse reference：refdata-gex-mm10-2020-A"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因组注释版本",
+                  "主要参数": "refdata-gex-mm10-2020-A 参考基因组提供的基因注释文件"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "输入数据参数",
+                  "主要参数": "输入为 FASTQ 文件，样本目录为 01.raw/Visium_FFPE_Mouse_Brain_fastqs"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "Space Ranger count 参数",
+                  "主要参数": "--id Visium_FFPE_Mouse_Brain_fastqs，--transcriptome refdata-gex-mm10-2020-A，--fastqs 02.output/Visium_FFPE_Mouse_Brain_fastqs"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "探针集参数",
+                  "主要参数": "--probe-set\nVisium_Mouse_Transcriptome\n_Probe_Set_v1.0_mm10-2020-A.csv"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "组织图像参数",
+                  "主要参数": "--image Visium_FFPE_Mouse_Brain_image.jpg"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "Slide 与 capture area 参数",
+                  "主要参数": "--slide V11J26-127，--area B1"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "计算资源参数",
+                  "主要参数": "--localcores=8，--localmem=20"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "BAM 输出参数",
+                  "主要参数": "--create-bam=false"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "结果检查参数",
+                  "主要参数": "检查 outs/web_summary.html 是否生成"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 23,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 4,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all 汇总流程最终目标输出，以 Space Ranger 完成标志文件 done/{sample}.spaceranger.done 作为最终目标，确保样本完成 Visium 空间转录组分析。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "prepare_fastq 对原始 FASTQ 文件进行整理，查找样本目录下的 R1 和 R2 压缩 FASTQ 文件，并分别合并为 Space Ranger 可识别的标准命名 FASTQ 文件。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "run_spaceranger 调用 spaceranger count 对 Visium 数据进行空间转录组分析，包括参考基因组比对、探针集匹配、组织图像处理、spot 定位、表达矩阵生成和 HTML 报告生成。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "run_spaceranger 运行结束后检查 outs/web_summary.html 是否存在，若文件存在则生成完成标志文件，若不存在则判定 Space Ranger 运行失败。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "3.2_xenium",
+          "title": "3.2 Xenium原位空间转录组数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "Xenium数据分析的标准流程是指从原始Xenium数据出发，最终获得空间表达矩阵的过程，通常包括实验设计与质量控制、聚类、空间统计等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 24,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 10,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "自动化工作流管理工具，根据输入、输出和规则依赖组织Xenium分析流程。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity/Apptainer",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "容器运行工具，用于调用xenium.sif中固定的Python分析环境。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "脚本运行环境，负责调用空间组学分析模块并生成结果文件。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SpatialData",
+                  "推荐版本": "0.1+",
+                  "功能描述": "空间多组学数据结构与I/O框架，用于读取Xenium.zarr并管理图像、形状和表达表。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "spatialdata-io",
+                  "推荐版本": "0.1+",
+                  "功能描述": "SpatialData的平台读取工具，支持Xenium等空间转录组数据格式转换与解析。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "Scanpy",
+                  "推荐版本": "1.10+",
+                  "功能描述": "单细胞表达矩阵分析工具，用于质量控制、过滤、归一化、PCA、邻接图、UMAP和Leiden聚类。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "Squidpy",
+                  "推荐版本": "1.3+",
+                  "功能描述": "空间转录组分析工具，用于空间可视化、空间邻域图、共现、邻域富集、中心性和空间自相关分析。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "Matplotlib",
+                  "推荐版本": "3.8+",
+                  "功能描述": "Python绘图库，用于保存质量控制和空间分析图。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "Seaborn",
+                  "推荐版本": "0.13+",
+                  "功能描述": "统计绘图库，用于绘制质量控制指标分布图。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "spatialdata-plot",
+                  "推荐版本": "0.2+",
+                  "功能描述": "SpatialData可视化扩展模块，用于支持空间数据可视化。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 25,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "输入数据参数",
+                  "主要参数": "SpatialData read_zarr（zarr_path：config.yaml中xenium_zarr指定的Xenium.zarr输入目录）"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "Scanpy calculate_qc_metrics（percent_top=(10,20,50,150)：统计高表达基因占比） filter_cells（min_counts=10：保留总转录本计数不少于10的细胞） filter_genes（min_cells=5：保留至少5个细胞中检出的基因）\n标准化参数：Scanpy normalize_total（inplace=True：按细胞总量归一化并原位写回） log1p（默认：对归一化表达取log(1+x)） pca（默认：计算主成分用于下游邻接图构建）"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "聚类降维参数",
+                  "主要参数": "Scanpy neighbors（默认：基于表达空间构建近邻图） umap（默认：生成二维UMAP嵌入） leiden（默认：基于近邻图进行Leiden聚类）"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "空间邻域参数",
+                  "主要参数": "Squidpy spatial_neighbors（coord_type=\"generic\"：使用通用二维空间坐标） spatial_neighbors（delaunay=True：使用Delaunay三角剖分构建空间邻接） centrality_scores（cluster_key=\"leiden\"：按Leiden簇计算空间中心性）"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "空间统计参数",
+                  "主要参数": "Squidpy co_occurrence（cluster_key=\"leiden\"：按Leiden簇计算空间共现） nhood_enrichment（cluster_key=\"leiden\"：计算空间邻域富集） spatial_autocorr（mode=\"moran\"：计算Moran's I空间自相关） spatial_autocorr（n_perms=100：置换次数） spatial_autocorr（n_jobs=1：单线程计算）"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "抽样分析参数",
+                  "主要参数": "Scanpy subsample（fraction=0.5：随机抽取50%细胞用于计算量较高的空间共现和空间展示）"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "绘图输出参数",
+                  "主要参数": "Matplotlib savefig（dpi=300：图形输出分辨率） savefig（bbox_inches=\"tight\"：自动裁剪图形边界）"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 26,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 2,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：汇总最终输出文件，检查results/Xenium_10xgenomics.h5ad及figures目录下的主要PDF图形是否生成。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "squidpy_xenium_combine：在xenium.sif容器内调用squidpy_Xenium_combine.py，读取Xenium.zarr并完成质量控制、归一化、聚类、空间邻域分析、空间统计和结果保存。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_4_",
+      "title": "4. DNA表观组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "4.1_medip-seq",
+          "title": "4.1 MeDIP-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "meDIP-seq（甲基化 DNA 免疫共沉淀测序）数据分析标准流程，以全基因组 DNA 甲基化（5mC）检测为核心，从原始 FASTQ 测序数据出发，经质控、修剪、比对、去重、Peak Calling、Motif 分析，最终获得标准化甲基化峰、富集区域及完整分析报告。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 27,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 8,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.11.9",
+                  "功能描述": "原始测序数据质量评估。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "0.6.7",
+                  "功能描述": "基于Cutadapt的自动化接头修剪及质量过滤工具。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "STAR",
+                  "推荐版本": "2.7.11b",
+                  "功能描述": "高性能的RNA-seq序列比对工具，用于将reads定位到参考基因组。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.22.1",
+                  "功能描述": "用于比对结果的排序、格式转换、去重（MarkDuplicates）及索引建立。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "MACS2",
+                  "推荐版本": "2.2.7.1",
+                  "功能描述": "meDIP-seq Peak Calling。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "MEME Suite",
+                  "推荐版本": "5.4.1",
+                  "功能描述": "甲基化Motif预测与已知基序扫描。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "统计分析、绘图、报告生成。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "/",
+                  "功能描述": "整合各步骤质控报告的汇总工具。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 28,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 4,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "hg38（GRCh38.p14）"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释文件",
+                  "主要参数": "gencode.v46.annotation.gtf"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "BigWig",
+                  "主要参数": "分箱大小：10；Motif 扫描 P 值阈值：0.01。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "质控与修剪参数",
+                  "主要参数": "碱基质量阈值：25；最小保留序列长度：36 bp；允许错配率：0.1；接头匹配严格度：3；自动识别 Illumina 接头，执行质量修剪与去污染。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 29,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 8,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "Fastqc：原始数据质量检测。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "trim_galore：去除接头与低质量碱基。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "star_alignment：序列比对至参考基因组。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "mark_duplicates：过滤PCR重复，保留高质量比对reads。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "peak_calling：基于IP/Input样本识别富集峰。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "motif_analysis：Peak区域的Motif预测与富集分析。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "bam_to_bw：生成用于可视化的BigWig轨道文件。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "generate_report：统计分析结果并编译HTML报告 。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "4.2_bs-seq",
+          "title": "4.2 BS-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "BS-seq（全基因组重亚硫酸盐测序，Bisulfite Sequencing）数据分析标准流程，以全基因组单碱基分辨率 m5C RNA 甲基化检测为核心，从原始 FASTQ 测序数据出发，经质控、修剪、重亚硫酸盐比对、去重、甲基化位点 Calling、注释、富集与可视化分析，最终输出标准化甲基化图谱、差异甲基化区域与完整分析报告。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 30,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.11.9",
+                  "功能描述": "原始测序数据质量评估。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "0.6.7",
+                  "功能描述": "基于Cutadapt的自动化接头修剪及质量过滤工具。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "HISAT-3N",
+                  "推荐版本": "2.2.1-3n-0.0.3",
+                  "功能描述": "高性能的针对m5C修饰的RNA-seq序列比对工具，以及直接输出m5C的配套工具。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.22.1",
+                  "功能描述": "用于比对结果的排序、格式转换、去重（MarkDuplicates）及索引建立。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "MEME Suite",
+                  "推荐版本": "5.4.1",
+                  "功能描述": "甲基化Motif预测与已知基序扫描。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "统计分析、绘图、报告生成。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "/",
+                  "功能描述": "整合各步骤质控报告的汇总工具。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 31,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 4,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "hg38（GRCh38.p14）"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释文件",
+                  "主要参数": "gencode.v46.annotation.gtf"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制",
+                  "主要参数": "BigWig：分箱大小10；Motif 扫描 P 值阈值：0.01"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "质控与修剪参数",
+                  "主要参数": "碱基质量阈值：25；最小保留序列长度：36 bp；允许错配率：0.1；接头匹配严格度：3；自动识别 Illumina 接头，执行质量修剪与去污染。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 32,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 8,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "Fastqc：原始数据质量检测。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "trim_galore：去除接头与低质量碱基。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "hisat-3n：序列比对至参考基因组。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "mark_duplicates：过滤PCR重复，保留高质量比对reads。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "hisat-3n-table：识别修饰位点。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "motif_analysis：Peak区域的Motif预测与富集分析。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "bam_to_bw：生成用于可视化的BigWig轨道文件。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "generate_report：统计分析结果并编译HTML报告。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_5_",
+      "title": "5. RNA表观组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "5.1_m1a-map-seq",
+          "title": "5.1 m1A-map-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "从原始m1A-MAP单端R2测序数据出发，最终获得候选m1A位点、反向calling位点、邻域序列和质控汇总结果的流程。该流程通常包括原始数据FastQC质控、Read2预处理、barcode提取、TrimGalore接头和低质量序列过滤、BWA比对、基于barcode和基因组位置的PCRduplicatecollapse、SAM/BAM转换与索引、samtoolsmpileup位点汇总、逐样本mismatchtable生成、untreated/treated成对合并、基于mismatchrate的m1A候选位点筛选、跨重复支持过滤、反向calling背景评估、候选位点邻域序列提取，以及MultiQC质控报告生成等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 33,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 6,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.11.9",
+                  "功能描述": "高通量测序数据质量控制工具，用于评估原始及预处理后FASTQ数据的质量，包括碱基质量分布、GC含量、序列重复水平及接头污染情况。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "0.6.7",
+                  "功能描述": "基于Cutadapt封装的序列预处理工具，用于进行接头去除、质量剪切及最短长度过滤，适用于高通量测序reads的标准化预处理。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "BWA",
+                  "推荐版本": "/",
+                  "功能描述": "短序列比对工具，用于将处理后的reads比对至参考基因组（hg19），本流程中使用bwa mem进行比对（容器中未直接输出版本信息）。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.13",
+                  "功能描述": "用于处理SAM/BAM格式文件的工具集，支持比对结果的筛选、格式转换、排序、索引及mpileup位点信息生成。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "1.33",
+                  "功能描述": "多样本质控结果整合工具，用于汇总FastQC、比对日志及流程统计信息，生成统一的HTML格式质量控制报告。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "脚本运行环境，在本流程中用于barcode提取、pileup解析、mismatch统计、候选位点筛选及motif输入文件生成等分析步骤。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 34,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 3,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "人类hg19参考基因组。"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "参考索引构建",
+                  "主要参数": "BWA索引。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "其他参数",
+                  "主要参数": "Trim Galore 参数：质量阈值 20；最短保留长度 30；线程数由 threads 指定。\nBarcode 参数：从预处理后 Read2 的 5’ 端提取并去除 10 nt barcode，barcode 单独写入 barcodes.txt。\nSAMtools mpileup 参数：-aa 保留所有参考位点；最低碱基质量 -Q 20；最低比对质量 -q 20；参考基因组由 reference.fasta 指定。\n候选位点 calling 参数：fc_cutoff = 3；diff_cutoff = 0.10；min_mismatch_reads = 5；min_depth 默认 10。\n重复支持参数：min_rep_support = 2。\n邻域序列参数：flank_length = 7，即提取候选位点上下游各 7 nt，总长度 15 nt 的 FASTA 序列。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 35,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 20,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "读取config.yaml中的样本信息、分组信息、重复配对关系、输出目录、容器路径、参考基因组路径、脚本路径和分析参数。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "对每个样本的原始R2 FASTQ执行FastQC，生成01_fastqc/raw目录下的原始reads质控结果。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "调用preprocessing.sh对R2 FASTQ进行预处理，先使用Trim Galore按质量阈值和最短长度过滤reads。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "在trimming后reads的5’端提取指定长度barcode，将barcode写入barcodes.txt，并将去除barcode后的序列输出为read2.processed.fastq.gz。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "对read2.processed.fastq.gz再次执行FastQC，评估预处理后reads的质量是否满足后续分析要求。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "使用BWA mem将预处理后的reads比对到hg19参考基因组，生成压缩SAM文件。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "调用collapse.sh对SAM文件进行PCR duplicate collapse，首先提取SAM header，并使用samtools view -F 2304保留primary alignment。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "检查primary SAM body行数与barcodes.txt行数是否一致，保证barcode可以按行对应到比对记录。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "按染色体、比对位置、链方向和barcode构建去重复key，保留每个key的第一条reads，并输出collapsed.sam.gz。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "将collapsed.sam.gz转换为BAM格式，完成排序和索引，得到collapsed.sorted.bam和对应.bai文件。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "调用bam_to_mismatch_table.py，对每个样本的sorted BAM运行samtools mpileup，逐位点解析pileup bases字符串。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "在mismatch table中统计各位点的参考碱基、有效深度、A/C/G/T/N 碱基计数、match计数、mismatch计数和mismatch_rate。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "按pair将untreated与treated样本的mismatch table进行位点级合并，生成pair_{pair}.merged.tsv。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "在成对合并表中计算diff和fc，其中diff为untreated mismatch_rate减treated mismatch_rate，fc为untreated mismatch_rate与treated mismatch_rate的比值。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "调用call_m1A_sites.py对每个pair的合并表进行候选m1A位点筛选，要求fc、diff、mismatch reads和深度均达到阈值。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "调用combine_pair_calls.py合并所有pair-level候选位点，并根据min_rep_support过滤，生成最终m1A_sites.tsv。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "调用reverse_call_m1A_sites.py对每个pair执行反向calling，筛选treated mismatch_rate高于untreated的位点，作为背景或假阳性评估结果。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "合并所有pair-level reverse calling结果，并根据重复支持阈值生成reverse_called_sites.tsv。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "调用extract_neighbor_sequences.py，从参考基因组中提取最终m1A位点上下游邻域序列，生成m1A_sites.fa，供后续motif分析使用。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "运行MultiQC汇总原始FastQC、处理后FastQC、BWA比对日志和流程日志，生成统一的多样本质控报告。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "5.2_m1a-quant-seq",
+          "title": "5.2 m1A-quant-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "从原始m1A-quant-seq单端测序数据出发，最终获得候选m1A位点、化学计量估计结果、质控汇总和HTML分析报告的流程，通常包括原始reads去重复、接头去除、清洗后reads质控、HISAT2基因组比对、正负链BAM拆分、bam-read count位点碱基计数、正负链突变解析、treated/untreated成对比较、候选位点清洗、重复支持筛选、基于GTF的转录本和RNA类型注释、beta-binomial统计检验、论文参数口径的stoichiometry估计、MultiQC汇总，以及最终m1A分析报告生成等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 36,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 5,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.11.9",
+                  "功能描述": "高通量测序数据质量控制工具，用于评估原始及处理后FASTQ数据的质量，包括碱基质量分布、GC含量、序列重复水平及接头污染等指标。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Cutadapt",
+                  "推荐版本": "3.5",
+                  "功能描述": "序列预处理工具，用于去除测序接头、低质量碱基及不符合要求的短序列，以提高后续比对和位点分析的准确性。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "Bowtie2",
+                  "推荐版本": "2.4.4",
+                  "功能描述": "快速短序列比对工具，用于将测序reads高效比对到参考序列，支持错配和缺口比对，输出SAM格式比对结果。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.13",
+                  "功能描述": "用于处理SAM/BAM格式文件的工具集，支持比对结果的格式转换、排序、索引、统计分析及mpileup信息生成。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "1.12",
+                  "功能描述": "多样本质控结果整合工具，用于汇总FastQC、比对统计等多种分析结果并生成统一的HTML可视化报告。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 37,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "人类hg19参考基因组。"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "参考索引构建",
+                  "主要参数": "HISAT2索引。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "样本分组",
+                  "主要参数": "untreated和treated成对设计，按pair字段区分重复。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "Clumpify参数",
+                  "主要参数": "dedupe，subs=0，groups=4096。"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "质量剪切",
+                  "主要参数": "-q 20；最短保留长度-m 30。"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "HISAT2 参数",
+                  "主要参数": "-k 5，–trim5 11，线程数由 threads 指定。"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "",
+                  "主要参数": "bam-readcount 参数：-b 20，-w 1。\n突变解析参数：最小覆盖度默认 ≥5，最小突变率默认 ≥0.01。\n候选位点预筛选参数：每个重复 mutation count ≥3，mutation rate ≥1%，且 untreated 组突变率高于 treated 组。\n重复支持参数：min_rep_support = 2。\n显著性筛选参数：输出全量 common_m1a.csv，同时输出 pvalue < 0.1 的 common_m1a_pvalue90.csv 和 pvalue < 0.05 的 common_m1a_pvalue95.csv。\nStoichiometry 估计参数：calibration mode 为 paper_params，B = 0.0025，R0 = 0.52，fA = 0.22，最低 mutation rate 阈值为 1.0%。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 38,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 25,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "读取config.yaml中的样本信息、分组信息、重复配对关系、参考基因组路径、HISAT2索引路径、容器路径、脚本路径和筛选参数。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "使用Clumpify对每个样本的原始FASTQ进行去重复处理，输出01_clump目录下的clumped.fastq.gz文件。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "使用Cutadapt去除接头序列，并进行质量剪切和长度过滤，输出02_trim目录下的trim.fastq.gz文件。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "使用FastQC对trimming后的reads进行质控，生成fastqc_trimmed质控结果和对应日志。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "使用HISAT2将清洗后的reads比对到hg19参考基因组索引，设置-k 5和–trim5 11，并通过samtools view生成BAM文件。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "输出每个样本的HISAT2比对摘要文件，用于后续报告中的比对率和reads统计。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "使用samtools view根据链方向拆分BAM文件，将非反向链reads输出到pos目录，将反向链reads输出到neg目录。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "分别对正链和负链 BAM 文件进行排序和索引，生成pos.sorted.bam、neg.sorted.bam及对应索引。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "对正链BAM调用bam-readcount，按参考基因组逐位点提取碱基计数信息，并转换为压缩CSV格式。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "对负链BAM调用bam-readcount，生成负链位点级readcount结果。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "调用parse_pos_arg.py解析untreated样本正链readcount结果，提取满足覆盖度和突变率阈值的候选突变位点。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "调用parse_neg_arg.py解析untreated样本负链readcount结果，提取负链候选突变位点。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "调用control_parse_pos_arg.py，以untreated正链候选位点为参考，在treated正链readcount中提取相同位点的突变信息。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "调用control_parse_neg_arg.py，以untreated负链候选位点为参考，在treated负链readcount中提取相同位点的突变信息。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "调用clean_ubntreat_arg.py对正链untreated候选位点进行清洗，将可用于后续比较的位点和额外位点分别输出。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "调用clean_neg_untreat_arg.py对负链untreated候选位点进行清洗，生成正负链一致格式的cleaned和extra结果。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "根据样本pair、untreated样本、正负链clean文件和treated正负链突变文件生成input_manifest.tsv。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "调用Prepare-input-flex.R，根据input_manifest.tsv为每个重复构建call-m1a-{pair}.csv输入表。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "调用Callm1A-input-flex.R对所有重复进行候选m1A位点筛选，计算Diff、DMR、Mut_avg、DMR_avg、重复支持数，并基于GTF注释位点所在的5’UTR、3’UTR、Exon、Intron、tRNA、rRNA、Mitochondria或intergenicRNA区域。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "在候选位点表中进行beta-binomial统计检验，生成common_m1a.csv、common_m1a_pvalue90.csv、common_m1a_pvalue95.csv 及对应BED文件。"
+                },
+                {
+                  "序号": "规则二十一",
+                  "内容": "调用EstimateStoichiometry-paper.R，基于论文校准参数由mutation rate估算m1A stoichiometry，并生成common_m1a.stoich.csv、common_m1a_pvalue90.stoich.csv、common_m1a_pvalue95.stoich.csv和paper_calibration_summary.csv。"
+                },
+                {
+                  "序号": "规则二十二",
+                  "内容": "运行MultiQC汇总FastQC、HISAT2日志和流程统计文件，生成multiqc_report.html。"
+                },
+                {
+                  "序号": "规则二十三",
+                  "内容": "调用generate_m1a_report.py汇总样本统计、候选位点数量、RNA类型分布和top sites，生成sample_statistics.json、sample_summary.csv和top_sites.csv。"
+                },
+                {
+                  "序号": "规则二十四",
+                  "内容": "调用generate_m1a_figures.py生成reads概况、比对率、RNA类型分布和top位点图形。"
+                },
+                {
+                  "序号": "规则二十五",
+                  "内容": "调用compile_m1a_html_report.py整合统计表、图形、MultiQC链接和项目信息，生成最终m1A_Analysis_Report.html分析报告。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "5.3_m7g-map-seq",
+          "title": "5.3 M7G-map-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "从原始m7G-MaP-seq测序数据出发，最终获得候选m7G位点结果、质控汇总和分析报告的流程，通常包括原始数据质控、接头去除、条形码/读段预处理、Bowtie2比对、SAM/BAM转换与比对统计、mpileup位点汇总、基于对照组与处理组的突变频率计算、候选位点筛选，以及MultiQC与HTML报告生成等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 39,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 6,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.11.9",
+                  "功能描述": "高通量测序数据质量控制工具，用于评估原始及处理后reads的质量，包括碱基质量分布、GC含量、序列重复水平及接头污染等指标。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Cutadapt",
+                  "推荐版本": "3.5",
+                  "功能描述": "序列预处理工具，用于去除测序接头、低质量碱基及过短序列，同时支持多种剪切策略以提高下游比对质量。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "Bowtie2",
+                  "推荐版本": "2.4.4",
+                  "功能描述": "快速且高效的短序列比对工具，基于Burrows-Wheeler Transform（BWT）算法，将测序reads比对到参考基因组，支持错配和缺口比对。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.13",
+                  "功能描述": "用于处理SAM/BAM格式文件的工具集，提供比对结果的格式转换、排序、索引及统计分析，并支持mpileup生成位点信息用于下游突变分析。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "1.12",
+                  "功能描述": "多样本质量控制结果整合工具，可汇总FastQC、比对统计等多种分析结果，生成统一的可视化报告（本流程中由于依赖冲突可能无法正常运行）。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "R",
+                  "推荐版本": "4.1.2",
+                  "功能描述": "统计分析与数据处理环境，在本流程中用于突变频率计算、差异分析及结果整理（通过自定义 R 脚本实现）。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 40,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 4,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "人类tRNA参考序列（hg38版本）"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "参考索引构建",
+                  "主要参数": "Bowtie2索引。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "序列对比",
+                  "主要参数": "Bowtie2默认参数。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "其他参数",
+                  "主要参数": "SAMtools mpileup -d（最大测序深度）300000\n；最小总覆盖度 ≥1500，control 组替代碱基频率≤0.01。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 41,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 18,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "对原始测序数据做FastQC质控，生成每个样本的原始reads质控报告。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "使用Cutadapt去除接头序列，并按配置参数进行质量剪切，得到初步清洗后的reads。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "根据测序类型决定是否执行额外预处理：对rrna/mrna模式，可调用预处理脚本进行barcode提取、裁剪和统计；对trna/small_rna模式，通常不做barcode处理，而是直接将trimming后的reads链接到下游目录。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "对经过trimming/预处理后的reads再次进行FastQC质控，用于评估清洗后的数据质量是否达标。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "使用Bowtie2将处理后的reads比对到参考序列，生成压缩的SAM比对结果文件。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "根据测序类型决定是否执行去重复处理，对rrna/mrna模式，可调用collapse脚本按论文模式合并重复reads；对trna/small_rna模式，则直接将比对结果作为最终SAM使用。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "将最终SAM文件转换为BAM格式，并完成排序和索引，得到标准化的sorted.bam和.bai文件。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "使用samtools flagstat统计BAM文件的总体比对情况。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "使用samtools stats生成更详细的比对统计信息，用于后续报告和质控汇总。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "根据配置文件生成sample_groups.tsv，记录每个样本所属分组和重复编号，供后续差异突变分析使用。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "生成bam_file.txt，汇总所有样本的BAM路径，供mpileup步骤批量读取。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "使用samtools mpileup汇总所有样本在参考序列各个位点的覆盖和碱基信息，生成统一的pileup文件，作为后续突变频率分析输入。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "调用R脚本run_getfreq_wrapper.R和getFreq2000.R，基于mpileup和样本分组信息，计算各位点的突变频率、组间差异及统计显著性，生成原始分析结果表。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "对analysis_out.txt进行规则过滤，筛选高置信度位点。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "汇总原始/处理后FastQC、BAM统计及分析结果，生成统一的MultiQC报告。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "整合样本比对统计、候选位点结果和分组信息，生成报告所需的JSON和CSV数据文件。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "根据统计结果生成读长/reads概况、比对率、候选位点分布和top sites等图形。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "整合统计表、图形和MultiQC结果，生成最终的m7G_Analysis_Report.html分析报告。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "5.4_merip-seq",
+          "title": "5.4 MeRIP-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "MeRIP-seq（甲基化RNA免疫共沉淀测序）数据分析的标准流程是指从原始下机数据（FASTQ）出发，通过质量控制、序列比对、重复序列处理、Peak Calling以及Motif分析，最终识别RNA上的m6A修改位点并生成可视化报告的过程。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 42,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 9,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.11.9",
+                  "功能描述": "原始测序数据质量评估。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "0.6.7",
+                  "功能描述": "基于Cutadapt的自动化接头修剪及质量过滤工具。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "STAR",
+                  "推荐版本": "2.7.11b",
+                  "功能描述": "高性能的RNA-seq序列比对工具，用于将reads定位到参考基因组。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.22.1",
+                  "功能描述": "用于比对结果的排序、格式转换、去重（MarkDuplicates）及索引建立。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "exomePeak2",
+                  "推荐版本": "/",
+                  "功能描述": "MeRIP-seq特异性Peak Calling。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "STREME",
+                  "推荐版本": "MEME Suite",
+                  "功能描述": "用于在识别的Peak序列中进行从头（de novo）Motif发现。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "FIMO",
+                  "推荐版本": "MEME Suite",
+                  "功能描述": "扫描已知序列中的特定Motif出现位置及显著性。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "DeepTools",
+                  "推荐版本": "bamCoverage",
+                  "功能描述": "将BAM文件转换为BigWig格式，用于基因组浏览器可视化。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "/",
+                  "功能描述": "整合各步骤质控报告的汇总工具。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 43,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 2,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "项目基础参数",
+                  "主要参数": "参考基因组版本：hg38（GRCh38.p14）\n基因注释文件：gencode.v46.annotation.gtf\nMotif 数据库：DRACH.meme（m6A 经典基序）\nBigWig 分箱大小：10\nMotif 扫描 P 值阈值：0.01"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "质控与修剪参数",
+                  "主要参数": "碱基质量阈值：25\n最小保留序列长度：36 bp\n允许错配率：0.1\n接头匹配严格度：3\n自动识别 Illumina 接头，执行质量修剪与去污染"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 44,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 8,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "Fastqc：原始数据质量检测。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "trim_galore：去除接头与低质量碱基。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "star_alignment：序列比对至参考基因组。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "mark_duplicates：过滤PCR重复，保留高质量比对reads。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "peak_calling：基于IP/Input 样本识别富集峰。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "motif_analysis：Peak区域的Motif预测与富集分析。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "bam_to_bw：生成用于可视化的BigWig轨道文件。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "generate_report：统计分析结果并编译HTML报告。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_6_",
+      "title": "6. 染色质表观组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "6.1_bulk/smart-seq",
+          "title": "6.1 bulk ATAC-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "bulk ATAC-seq数据分析的标准流程是指从原始bulk ATAC-seq测序数据出发，最终获得染色质开放区域及差异可及性结果的过程，通常包括实验设计与质控、比对、BAM处理、峰识别、差异可及性和转录因子足迹分析等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 45,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 17,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "7.32.4",
+                  "功能描述": "工作流管理系统，用于按规则依赖关系自动调度bulk ATAC-seq全流程分析任务。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity",
+                  "推荐版本": "4.0.1",
+                  "功能描述": "容器运行工具，用于封装分析软件环境并保证流程可重复运行。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "FastQC",
+                  "推荐版本": "0.12.1",
+                  "功能描述": "FASTQ测序数据质量评估工具，用于生成原始和过滤后reads的质量控制报告。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "Trim Galore",
+                  "推荐版本": "0.6.10",
+                  "功能描述": "基于Cutadapt和FastQC的reads预处理工具，用于双端数据接头去除和过滤后质控。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "Cutadapt",
+                  "推荐版本": "4.7",
+                  "功能描述": "接头序列去除与reads修剪工具，由Trim Galore调用完成底层序列裁剪。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "BWA-MEM2",
+                  "推荐版本": "2.2.1",
+                  "功能描述": "高性能基因组比对工具，用于将双端ATAC-seq reads比对到参考基因组。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "SAMtools",
+                  "推荐版本": "1.21",
+                  "功能描述": "SAM/BAM/CRAM文件处理工具，用于BAM统计、过滤、排序和索引。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "Samblaster",
+                  "推荐版本": "0.1.26",
+                  "功能描述": "比对流处理工具，用于在BWA-MEM2比对结果中辅助处理成对reads与重复信息。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "Sambamba",
+                  "推荐版本": "1.0.1",
+                  "功能描述": "BAM文件转换和排序工具，用于将SAM流转换为排序后的BAM文件。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "Genrich",
+                  "推荐版本": "0.6.1",
+                  "功能描述": "ATAC-seq峰识别工具，用于按Tn5切割位点识别染色质开放区域并输出narrowPeak文件。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "deepTools",
+                  "推荐版本": "3.5.6",
+                  "功能描述": "测序信号处理工具集，用于Tn5位点校正、片段长度统计和BigWig信号生成。"
+                },
+                {
+                  "序号": "12",
+                  "软件名称": "csaw",
+                  "推荐版本": "1.40.0",
+                  "功能描述": "Bioconductor差异结合/差异可及性分析包，用于识别组间差异开放区域。"
+                },
+                {
+                  "序号": "13",
+                  "软件名称": "ChIPpeakAnno",
+                  "推荐版本": "3.40.0",
+                  "功能描述": "Bioconductor peak注释工具，用于将差异开放区域注释到邻近基因和功能区域。"
+                },
+                {
+                  "序号": "14",
+                  "软件名称": "TOBIAS",
+                  "推荐版本": "0.17.2",
+                  "功能描述": "ATAC-seq footprint分析工具，用于Tn5偏倚校正、footprint score计算和转录因子结合差异检测。"
+                },
+                {
+                  "序号": "15",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "1.32",
+                  "功能描述": "多样本质控汇总工具，用于整合FastQC等结果并生成统一HTML报告。"
+                },
+                {
+                  "序号": "16",
+                  "软件名称": "R",
+                  "推荐版本": "4.4.3",
+                  "功能描述": "统计分析语言环境，用于运行CSAW和ChIPpeakAnno下游R脚本。"
+                },
+                {
+                  "序号": "17",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "脚本运行环境，用于生成统计JSON、图表清单和最终HTML报告。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 46,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 16,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 primary assembly（GENCODE release 48）"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GENCODE v48（GRCh38 primary assembly）"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "FastQC -t 8（每个样本质控使用 8 个线程） -o（指定 FastQC 报告输出目录）"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "Trim Galore --paired（双端 reads 模式） --fastqc（修剪后自动运行 FastQC） --cores 8（接头修剪使用 8 个线程）"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "比对参数",
+                  "主要参数": "BWA-MEM2 mem -t 8（比对线程数） -R（写入 read group 的 ID 和样本名信息）"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "BAM转换参数",
+                  "主要参数": "Samblaster（标记重复读段） Sambamba view -S -f bam（SAM转BAM） Sambamba sort -t 8（BAM排序线程数）"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "过滤参数",
+                  "主要参数": "SAMtools idxstats（提取染色体列表并排除 chrUn/chrM） view -F 3844（去除 unmapped、secondary、QC fail、duplicate、supplementary reads） -q 30（最低 MAPQ）"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "Tn5 校正参数",
+                  "主要参数": "alignmentSieve --ATACshift（按 ATAC-seq Tn5 插入偏移校正 reads 位置） --filterMetrics（输出过滤统计） -p 4（线程数）"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "Peak calling参数",
+                  "主要参数": "Genrich -j（ATAC-seq 模式） -d 150（切割位点扩展至 150 bp） -D（跳过 Genrich 内置 Tn5 偏移，因上游已 ATACshift） -y（保留非成对比对） -e（排除 chrUn/chrM） -p 0.01（最大 p 值阈值） -g 50（显著位点最大连接距离）"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "片段长度参数",
+                  "主要参数": "bamPEFragmentSize --binSize 1000000（片段长度统计窗口大小） --table（输出片段长度统计表） -p 24（线程数）"
+                },
+                {
+                  "序号": "11",
+                  "分析步骤": "信号轨道参数",
+                  "主要参数": "bamCoverage -of bigwig（输出 BigWig 格式） -bs 50（bin size 为 50 bp） --ignoreDuplicates（忽略重复 reads） --minMappingQuality 20（最低比对质量阈值） -p 25（线程数）"
+                },
+                {
+                  "序号": "12",
+                  "分析步骤": "差异可及性参数",
+                  "主要参数": "csaw samplesheet（样本分组表） sorted/（排序 BAM 输入目录） peaks/genrich/（peak 输入目录） fragmentSize.metric.tsv（片段长度统计表）"
+                },
+                {
+                  "序号": "13",
+                  "分析步骤": "Footprint 参数",
+                  "主要参数": "TOBIAS ATACorrect -b（组水平 BAM 文件） -g（参考基因组 FASTA） -p（差异开放区域 BED） --cores 25（线程数）"
+                },
+                {
+                  "序号": "14",
+                  "分析步骤": "Footprint参数",
+                  "主要参数": "TOBIAS FootprintScores --signal（ATACorrect 校正信号） --regions（差异开放区域） --cores 25（线程数）"
+                },
+                {
+                  "序号": "15",
+                  "分析步骤": "TFBS参数",
+                  "主要参数": "TOBIAS BINDetect --motifs（motif 文件） --signals（各组 footprint BigWig） --genome（参考基因组 FASTA） --peaks（差异开放区域） --motif-pvalue 0.01（motif 显著性阈值） --cores 25（线程数）"
+                },
+                {
+                  "序号": "16",
+                  "分析步骤": "报告参数",
+                  "主要参数": "MultiQC data/（汇总 data 目录质控结果） -o data/multiqc_report/{sample}（输出目录） --force（覆盖已有报告） report_language（最终 HTML 报告语言）"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 47,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 29,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：定义流程最终目标输出，本身不直接执行分析命令。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "qc_before_filtered：对原始双端FASTQ运行FastQC，生成过滤前质量控制报告。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "trim_fastq：使用 Trim Galore 对双端 reads 进行接头去除和基础过滤，并生成修剪后 FASTQ。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "qc_after_filtered：对修剪后的 reads 运行 FastQC，输出过滤后质量控制报告到 data 目录。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "bwa_mem：使用 BWA-MEM2 将修剪后的 reads 比对到 GRCh38 参考基因组，并生成排序 BAM 和比对率统计。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "filter：去除 chrUn、chrM 及低质量或异常标记 reads，得到过滤后的 BAM 文件。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "index_filtered_bam：为过滤后的 BAM 文件建立索引。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "shift_reads：使用 deepTools alignmentSieve 对 ATAC-seq reads 进行 Tn5 插入位点校正。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "sort_shifted_bam：对 Tn5 校正后的 BAM 文件按坐标排序。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "index_shifted_bam：为校正并排序后的 BAM 文件建立索引。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "sort_by_name：将校正后的 BAM 按 read name 排序，为 Genrich peak calling 准备输入。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "genrich：使用 Genrich 基于 Tn5 切割位点识别每个样本的染色质开放峰，并输出 narrowPeak 和 bedGraph 文件。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "sort_shifted_bam2：将 name-sorted BAM 重新按坐标排序，生成后续合并和信号分析使用的 BAM。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "index_mapped_bam：为最终排序 BAM 文件建立索引。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "merge_bam：按样本分组将同组 BAM 合并为组水平 BAM。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "index_group_bam：为组水平 BAM 文件建立索引。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "bamPE_fragment_size：使用 deepTools 统计 paired-end 片段长度分布并输出图表和统计表。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "CSAW：调用 csaw 脚本，根据样本分组、BAM 和 peak 信息进行组间差异可及性分析。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "tidy_CSAW：整理 CSAW 输出文件，生成 diff/DiffBinding_significant.bed。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "atacorrect：使用 TOBIAS ATACorrect 对组水平信号进行 Tn5 偏倚校正。"
+                },
+                {
+                  "序号": "规则二十一",
+                  "内容": "footprinting：使用 TOBIAS FootprintScores 在差异开放区域中计算 footprint score 信号。"
+                },
+                {
+                  "序号": "规则二十二",
+                  "内容": "bindetect：使用 TOBIAS BINDetect 结合 motif 和 footprint 信号检测组间 TFBS 差异。"
+                },
+                {
+                  "序号": "规则二十三",
+                  "内容": "bamCoverage：使用 deepTools bamCoverage 为每个样本生成 BigWig 可视化信号轨道。"
+                },
+                {
+                  "序号": "规则二十四",
+                  "内容": "ChIPpeakAnno：在人类物种配置下，对差异开放区域进行基因组注释并输出 annotated_peak.csv。"
+                },
+                {
+                  "序号": "规则二十五",
+                  "内容": "Final_MultiQC：汇总每个样本的质控结果并生成 MultiQC HTML 报告。"
+                },
+                {
+                  "序号": "规则二十六",
+                  "内容": "collect_report_statistics：收集 MultiQC、peak、BigWig、TFBS、差异区域和注释信息，生成报告统计 JSON。"
+                },
+                {
+                  "序号": "规则二十七",
+                  "内容": "prepare_report_figures：整理报告所需图像并生成 figure_manifest.json。"
+                },
+                {
+                  "序号": "规则二十八",
+                  "内容": "render_html_report：将统计 JSON、图像清单和 HTML 模板渲染为最终 ATAC-seq 分析报告。"
+                },
+                {
+                  "序号": "规则二十九",
+                  "内容": "report_only：定义仅生成最终 HTML 报告的目标规则。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "6.2_scatac-seq",
+          "title": "6.2 scATAC-seq数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "scATAC-seq数据分析的标准流程是指从原始单细胞ATAC测序数据出发，最终获得peak-barcode染色质开放性矩阵、QC图和细胞聚类结果的过程，通常包括实验设计与质控、比对、peak矩阵构建、降维聚类、基因活性分析等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 48,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 8,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Cell Ranger ATAC",
+                  "推荐版本": "scatacseq.sif内置版本",
+                  "功能描述": "10x Genomics单细胞ATAC数据处理软件，用于barcode识别、基因组比对、fragments文件生成、peak calling和peak-barcode矩阵构建。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "R",
+                  "推荐版本": "scatacseq.sif内置版本",
+                  "功能描述": "单细胞ATAC下游分析运行环境，用于调用Signac、Seurat及Bioconductor相关包完成质控、降维和可视化。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "Signac",
+                  "推荐版本": "scatacseq.sif内置版本",
+                  "功能描述": "基于Seurat体系的单细胞染色质可及性分析工具，用于TSS enrichment、nucleosome signal、FRiP、blacklist ratio、TF-IDF/LSI和基因活性分析。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "Seurat",
+                  "推荐版本": "scatacseq.sif内置版本",
+                  "功能描述": "单细胞对象管理、降维、邻近图构建、聚类和可视化分析框架。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "AnnotationHub",
+                  "推荐版本": "scatacseq.sif内置版本",
+                  "功能描述": "Bioconductor注释资源检索工具，用于读取Ensembl基因注释包。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "报告统计、Cell Ranger汇总图绘制、HTML报告编译和base64图片嵌入脚本运行环境。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "流程调度系统，用于组织Cell Ranger ATAC、Signac分析及报告生成规则。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "Singularity CE",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "容器运行环境，用于加载scatacseq.sif并保证流程软件环境可复现。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 49,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 6,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 / hg38；Cell Ranger参考目录为refdata-cellranger-arc-GRCh38-2024-A。"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GRCh38 Ensembl v110（AnnotationHub编号AH113665）。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "Cell Ranger ATAC --fastqs（样本FASTQ目录） --reference（Cell Ranger参考目录） --sample（样本名） --localcores 20（单样本核心数） --localmem 64（单样本内存GB）。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "Signac CreateChromatinAssay sep=c(':','-')（peak坐标解析方式） min.cells 10（peak至少覆盖细胞数） min.features 200（细胞至少包含peak特征数） TSSEnrichment fast=FALSE（精确计算TSS富集） NucleosomeSignal（计算核小体信号）。"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "质量控制参数",
+                  "主要参数": "Signac subset nCount_peaks > 3000（过滤低复杂度细胞） nCount_peaks < 30000（过滤异常高peak计数细胞） pct_reads_in_peaks > 15（FRiP百分比阈值） blacklist_ratio < 0.05（过滤blacklist比例高的细胞） nucleosome_signal < 4（过滤核小体信号异常细胞） TSS.enrichment > 3（保留TSS富集合格细胞）。"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "主要分析参数",
+                  "主要参数": "Signac/Seurat RunTFIDF（TF-IDF归一化） FindTopFeatures min.cutoff='q0'（保留降维peak特征） RunSVD（LSI降维） RunUMAP reduction='lsi', dims=2:30（UMAP降维） FindNeighbors dims=2:30（邻近图构建） FindClusters algorithm=3（聚类算法） FeaturePlot max.cutoff='q95'（marker信号上限） png_dpi=300（PNG分辨率）。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 50,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：聚合最终输出，包括Signac质控图、RDS对象、报告统计JSON、Cell Ranger汇总图和HTML报告。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "cellranger_atac：运行cellranger-atac count，将10x scATAC FASTQ数据处理为filtered_peak_bc_matrix.h5、singlecell.csv和fragments.tsv.gz。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "Signac：读取Cell Ranger ATAC输出，构建ChromatinAssay，计算TSS enrichment、nucleosome signal、FRiP和blacklist ratio，执行细胞过滤、TF-IDF、LSI、UMAP、聚类、GeneActivity和QC图/RDS导出。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "collect_report_statistics：汇总Cell Ranger ATAC输出、Signac图像、RDS对象和日志信息，生成report/data/sample_statistics.json。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "prepare_report_figures：整理Signac PNG/PDF图像manifest，并绘制Cell Ranger ATAC Mapping Rate与FRiP图、汇总指标图。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "render_html_report：读取统计JSON、图像manifest和scATAC-seq_css.md模板，生成中文或英文HTML分析报告，并将PNG图像以base64形式嵌入。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "report_only：以HTML报告为目标，用于在已有Signac结果基础上单独更新报告。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_7_",
+      "title": "7. 免疫组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "7.1_sctcr/scbcr",
+          "title": "7.1 scTCR/scBCR数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "scTCR和scBCR数据分析的标准流程是指从原始单细胞VDJ测序数据出发，最终获得TCR/BCR组库注释和克隆谱系结果的过程，通常包括实验设计与序列组装、V(D)J注释、单细胞质控、克隆推断、谱系重建等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 51,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 13,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "基于规则和依赖关系的可重复生物信息流程管理工具，用于调度本标准中的全部分析步骤。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity/Apptainer",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "用于加载 airrflow.sif 容器，固定 Cell Ranger、Change-O、IgBLAST、R 包和 MultiQC 等运行环境。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "Cell Ranger VDJ",
+                  "推荐版本": "10x VDJ reference 7.1.0",
+                  "功能描述": "10x Genomics 单细胞 V(D)J 数据组装、contig 注释、细胞识别和 clonotype 生成工具。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "IgBLAST",
+                  "推荐版本": "容器内置版本",
+                  "功能描述": "NCBI 免疫受体 V(D)J 基因分段比对和重注释工具。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "Change-O",
+                  "推荐版本": "Immcantation 容器内置版本",
+                  "功能描述": "AIRR/Change-O 表格构建、字段拆分、过滤和 V(D)J 注释整理工具。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "EnchantR",
+                  "推荐版本": "容器内置版本",
+                  "功能描述": "Immcantation 报告框架，用于单细胞 QC、克隆阈值评估、克隆分析和谱系分析报告。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "SHazaM",
+                  "推荐版本": "容器内置版本",
+                  "功能描述": "Immcantation R 包，用于克隆阈值搜索和免疫组库统计分析。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "SCOPer",
+                  "推荐版本": "容器内置版本",
+                  "功能描述": "Immcantation R 包，用于基于序列相似性的克隆群推断。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "Dowser",
+                  "推荐版本": "容器内置版本",
+                  "功能描述": "用于 BCR 克隆谱系重建和系统发育分析的 Immcantation R 包。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "RAxML-NG",
+                  "推荐版本": "容器内置版本",
+                  "功能描述": "最大似然系统发育树构建工具，在本流程中作为 Dowser/EnchantR 谱系树构建后端。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "MultiQC",
+                  "推荐版本": "容器内置版本",
+                  "功能描述": "多工具结果聚合与质量控制报告生成工具。"
+                },
+                {
+                  "序号": "12",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "Snakemake 与报告统计脚本运行环境。"
+                },
+                {
+                  "序号": "13",
+                  "软件名称": "R",
+                  "推荐版本": "4.0",
+                  "功能描述": "过滤脚本、EnchantR 报告和报告绘图脚本运行环境。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 52,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 15,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "参考基因组版本",
+                  "主要参数": "GRCh38 refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0。"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "基因注释版本",
+                  "主要参数": "GRCh38 alts ensembl 7.1.0；IgBLAST 数据库使用 igblast_base；生殖系数据库使用 IMGT germline imgtdb_base。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "Cell Ranger VDJ",
+                  "主要参数": "--reference（10x V(D)J 参考目录），--fastqs（样本 FASTQ 目录），--localcores 8（本地线程数），--localmem 64（本地内存 GB）。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "AssignGenes.py",
+                  "主要参数": "igblast：-b igblast_db（IgBLAST 数据库根目录），--organism species（物种，来自 samplesheet），--loci pcr_target_locus（IG 或 TR 受体类型），--nproc threads（并行线程数）。"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "MakeDb.py",
+                  "主要参数": "igblast：-r germline_db_root/species/vdj（IMGT 生殖系 VDJ FASTA 目录），--partial（mouse TR 数据时允许部分比对），--outname sample_id（输出前缀）。"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "filter_quality.R",
+                  "主要参数": "v_call 链匹配（位点需匹配 v_call 链），min_informative_sites=200（至少 200 个有效信息位点），max_n_ratio=0.10（N 碱基比例不超过 10%）。"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "ParseDb.py",
+                  "主要参数": "split：-f productive（按 productive 字段拆分），productive-T.tsv（保留 productive 为 TRUE 的序列，T 表示 TRUE 而非 TCR）。"
+                },
+                {
+                  "序号": "8",
+                  "分析步骤": "filter_junction_mod3.R",
+                  "主要参数": "junction 长度为 3 的倍数（保留可翻译的 CDR3/junction 序列）。"
+                },
+                {
+                  "序号": "9",
+                  "分析步骤": "add_metadata.R",
+                  "主要参数": "--metadata samplesheet（按 sample_id 注入 subject_id、species、pcr_target_locus、single_cell 等样本元数据）。"
+                },
+                {
+                  "序号": "10",
+                  "分析步骤": "EnchantR",
+                  "主要参数": "single_cell_qc：去除无重链细胞（BCR 场景），去除多个重链细胞，去除跨样本相同 cell_id 和核苷酸序列的疑似污染序列，并标准化 cell_id 唯一性。"
+                },
+                {
+                  "序号": "11",
+                  "分析步骤": "clonal_threshold",
+                  "主要参数": "auto（自动搜索克隆阈值）；fallback_clonal_threshold=0.15（自动阈值失败时使用的备用阈值）。"
+                },
+                {
+                  "序号": "12",
+                  "分析步骤": "clonal_assignment",
+                  "主要参数": "cloneby=subject_id（克隆分析分组字段），crossby=subject_id（跨样本比较字段），singlecell_field=single_cell（单细胞标记字段）。"
+                },
+                {
+                  "序号": "13",
+                  "分析步骤": "lineage_all",
+                  "主要参数": "lineage_trees=true（启用谱系树分析），lineage_builder=raxml（谱系树后端），lineage_exec=/usr/local/raxml-ng/bin/raxml-ng（RAxML-NG 可执行文件），lineage_minseq=2（每个 IGH clone 至少 2 条序列才进入 Dowser）。"
+                },
+                {
+                  "序号": "14",
+                  "分析步骤": "MultiQC",
+                  "主要参数": "--force（覆盖已有报告），--filename ImmPort_Immcantation_scTCR_scBCR_multiqc.html（综合质控报告文件名），-o 07_multiqc（输出目录）。"
+                },
+                {
+                  "序号": "15",
+                  "分析步骤": "Report",
+                  "主要参数": "report_language=cn（中文报告），report_title/report_subtitle/company_name/project_id（HTML 报告元信息）。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 53,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 26,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：汇总默认分析目标，触发完整 scTCR/scBCR 分析和 HTML 报告生成。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "preflight：检查样本表、参考目录、IgBLAST 数据库、IMGT germline 数据库、容器和关键命令是否可用。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "normalize_samplesheet：标准化 samples.tsv，确认 sample_id、FASTQ 路径、物种、受体类型和 single_cell 字段。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "prepare_cellranger_reference：准备 Cell Ranger V(D)J 参考目录并生成 reference marker。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "stage_fastqs：将 samplesheet 中的 R1/R2 FASTQ 链接或复制到流程工作目录。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "cellranger_vdj：运行 cellranger vdj，完成 contig 组装、注释、细胞识别和 clonotype 生成。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "copy_airr_table：复制 Cell Ranger 的 airr_rearrangement.tsv 作为后续重注释输入。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "convert_airr_to_fasta：使用 ConvertDb.py 将 AIRR 表转换为 FASTA 序列文件。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "assign_genes：使用 AssignGenes.py igblast 对序列进行 V(D)J 基因分段重注释。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "make_db：使用 MakeDb.py 将 IgBLAST 结果和序列整合为 Change-O/AIRR 表。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "filter_quality：根据 v_call 链匹配、有效位点数和 N 碱基比例过滤低质量记录。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "split_productive：保留 productive 为 TRUE 的功能性序列。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "filter_junction_mod3：保留 junction 长度为 3 的倍数的序列。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "add_metadata：将样本元数据写入过滤后的 repertoire 表。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "collect_final_samples：收集每个样本最终 meta-pass 表并生成样本到结果文件的映射。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "single_cell_qc：运行 EnchantR 单细胞 QC 并生成 QC-pass repertoire 文件。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "find_threshold：使用 SHazaM/EnchantR 搜索克隆定义阈值，失败时写入备用阈值。"
+                },
+                {
+                  "序号": "规则十八",
+                  "内容": "build_group_manifest：按 cloneby 字段建立分组清单，组织后续克隆分析输入。"
+                },
+                {
+                  "序号": "规则十九",
+                  "内容": "clonal_assignment_all：运行 EnchantR/SCOPer 进行克隆定义，必要时使用 fallback clone assignment。"
+                },
+                {
+                  "序号": "规则二十",
+                  "内容": "lineage_all：对满足条件的 IGH clone 生成 BCR 谱系输入并运行 Dowser/RAxML-NG 谱系分析。"
+                },
+                {
+                  "序号": "规则二十一",
+                  "内容": "multiqc：聚合流程日志和结果，生成 MultiQC 综合报告。"
+                },
+                {
+                  "序号": "规则二十二",
+                  "内容": "collect_report_statistics：汇总样本、分组、克隆、谱系和软件版本信息。"
+                },
+                {
+                  "序号": "规则二十三",
+                  "内容": "prepare_report_figures：基于统计结果绘制样本保留、链型构成、克隆与谱系概览图。"
+                },
+                {
+                  "序号": "规则二十四",
+                  "内容": "render_html_report：将统计结果和图像嵌入 HTML 模板，生成 scTCR-scBCR 分析报告。"
+                },
+                {
+                  "序号": "规则二十五",
+                  "内容": "prune_results：可选清理规则，按 scripts/prune_results.py 删除或整理冗余中间结果。"
+                },
+                {
+                  "序号": "规则二十六",
+                  "内容": "report_only：仅以最终 HTML 报告作为目标，便于单独刷新报告系统。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_8_",
+      "title": "8. 蛋白质组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "8.1_lfq",
+          "title": "8.1 非标记定量（LFQ）蛋白质组数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "非标记定量（Label-Free Quantification, LFQ）蛋白质组数据分析的标准流程是指从原始液相色谱-串联质谱（LC-MS/MS）数据出发，最终获得蛋白质鉴定、定量矩阵、差异表达蛋白和功能富集结果的过程，通常包括实验设计与质控、谱图搜库、蛋白质推断、定量归一化、差异分析和功能注释等核心步骤。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 54,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 10,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "工作流调度工具，用于组织规则依赖、并行执行和结果文件追踪。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity/Apptainer",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "容器运行环境，用于加载proteomics_latest.sif并保证软件环境可复现。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "MaxQuant",
+                  "推荐版本": "2.4.17",
+                  "功能描述": "基于MS1的LFQ蛋白质组学定量工具，用于raw文件搜库、肽段鉴定、蛋白质推断和定量。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "FragPipe",
+                  "推荐版本": "22.0",
+                  "功能描述": "基于MSFragger的快速蛋白质组学分析流程，包含MSBooster谱图预测增强。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "DIA-NN",
+                  "推荐版本": "1.9.2",
+                  "功能描述": "数据非依赖采集（DIA）数据分析工具，用于DIA模式下肽段和蛋白质的鉴定与定量。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "Spectronaut",
+                  "推荐版本": "商业软件/DIA模式",
+                  "功能描述": "DIA/SWATH-MS数据分析的商业工具，提供谱图库搜索和直接DIA分析。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "MSstats",
+                  "推荐版本": "4.10+",
+                  "功能描述": "Bioconductor差异丰度分析包，用于基于肽段或蛋白质定量结果的统计建模。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "Perseus",
+                  "推荐版本": "2.0+",
+                  "功能描述": "MaxQuant配套的统计分析和可视化平台。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "R",
+                  "推荐版本": "4.4+",
+                  "功能描述": "统计分析和绘图环境，用于差异分析和功能富集。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "脚本运行环境，用于报告统计、绘图和HTML编译。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 55,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "蛋白序列数据库",
+                  "主要参数": "UniProt Homo sapiens reviewed proteome（Swiss-Prot，版本需标注）。"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "诱饵数据库",
+                  "主要参数": "Reverse或Randomized decoy策略。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "常见污染物数据库",
+                  "主要参数": "cRAP（common Repository of Adventitious Proteins）。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "MaxQuant搜库参数",
+                  "主要参数": "酶切Trypsin/P，最大漏切位点数=2；固定修饰Carbamidomethyl (C)；可变修饰Oxidation (M)、Acetyl (Protein N-term)；肽段质量容差First search 20 ppm，Main search 4.5 ppm（Orbitrap）；碎片离子容差20 ppm（Orbitrap HCD）；FDR阈值PSM FDR=0.01，Protein FDR=0.01；定量模式LFQ（min. ratio count=2），启用match between runs；最小肽段长度7个氨基酸；最小unique肽段数每个蛋白至少1条unique peptide。"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "质控参数",
+                  "主要参数": "肽段鉴定数每样本≥10,000条肽段（推荐水平）；蛋白鉴定数每样本≥2,000个蛋白组（推荐水平）；保留时间漂移样本间中位漂移<2分钟（推荐水平）；总离子流图（TIC）峰形各样本峰形基本一致。"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "差异分析参数",
+                  "主要参数": "数据预处理过滤至少在50%样本中有定量的蛋白，缺失值用正态分布插补（width=0.3, downshift=1.8）；统计检验MSstats或limma moderated t-test；显著性阈值adjusted p-value < 0.05，|log2FC| > 1。"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "功能富集参数",
+                  "主要参数": "基因集数据库GO、KEGG、Reactome、STRING；显著富集阈值adjusted p-value < 0.05（超几何检验或Fisher精确检验）。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 56,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 14,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：定义最终目标输出，包括蛋白定量表、差异蛋白列表、功能富集结果和HTML报告。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "raw_ms_qc：对每个样本的raw MS文件进行质控统计（TIC、峰数、鉴定计数）。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "maxquant_search：使用MaxQuant对raw文件进行搜库鉴定和LFQ定量，生成proteinGroups.txt和peptides.txt。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "fragpipe_search：使用FragPipe对raw文件进行搜库鉴定和定量。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "protein_qc_filter：过滤污染物、反库匹配和仅靠修饰位点鉴定的蛋白。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "lfq_normalization：对LFQ强度进行log2转换和分位数归一化或中位中心化。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "differential_analysis：使用MSstats或limma进行组间差异蛋白检测。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "functional_enrichment：对差异蛋白进行GO/KEGG/Reactome富集分析。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "ppi_network：基于STRING数据库构建差异蛋白互作网络。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "multiqc：汇总质控统计结果，生成MultiQC HTML报告。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "collect_report_statistics：收集搜库统计、蛋白定量和差异分析结果，生成报告JSON。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "prepare_report_figures：绘制PCA图、火山图、热图和富集气泡图。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "render_html_report：整合统计JSON、图形和HTML模板，生成中文或英文蛋白质组分析报告。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "report_only：作为仅生成报告的目标规则。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_9_",
+      "title": "9. 代谢组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "9.1_lc-ms",
+          "title": "9.1 LC-MS代谢组数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "非靶向液相色谱-质谱（LC-MS）代谢组数据分析的标准流程是指从原始LC-MS/MS数据出发，最终获得代谢物鉴定、定量矩阵、差异代谢物和代谢通路富集结果的过程，通常包括实验设计与质控、峰检测与对齐、代谢物鉴定、定量归一化、差异分析和通路分析等核心步骤。本流程适用于免疫力研究中的血清/血浆、组织、细胞等样本的代谢组学分析。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 57,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 11,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "Snakemake",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "工作流调度工具，用于组织规则依赖、并行执行和结果文件追踪。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "Singularity/Apptainer",
+                  "推荐版本": "运行环境版本",
+                  "功能描述": "容器运行环境，用于加载metabolomics_latest.sif并保证软件环境可复现。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "MS-DIAL",
+                  "推荐版本": "5.3+",
+                  "功能描述": "非靶向代谢组学数据处理工具，用于峰检测、对齐、空白过滤和谱库匹配鉴定。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "XCMS",
+                  "推荐版本": "4.4+",
+                  "功能描述": "LC-MS代谢组学峰检测、保留时间对齐和特征提取工具。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "CAMERA",
+                  "推荐版本": "1.58+",
+                  "功能描述": "LC-MS加合离子和同位素峰标注工具。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "MetaboAnalystR",
+                  "推荐版本": "4.0+",
+                  "功能描述": "代谢组学统计分析和功能富集R包。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "MetFrag",
+                  "推荐版本": "2.5+",
+                  "功能描述": "基于碎片谱图和候选分子的代谢物鉴定工具。"
+                },
+                {
+                  "序号": "8",
+                  "软件名称": "SIRIUS",
+                  "推荐版本": "5.8+",
+                  "功能描述": "基于碎片树和指纹预测的代谢物鉴定工具。"
+                },
+                {
+                  "序号": "9",
+                  "软件名称": "GNPS",
+                  "推荐版本": "/",
+                  "功能描述": "基于分子网络的代谢物鉴定和社区数据库搜索平台。"
+                },
+                {
+                  "序号": "10",
+                  "软件名称": "Python",
+                  "推荐版本": "3.10+",
+                  "功能描述": "脚本运行环境，用于报告统计、绘图和HTML编译。"
+                },
+                {
+                  "序号": "11",
+                  "软件名称": "R",
+                  "推荐版本": "4.4+",
+                  "功能描述": "统计分析和绘图环境，用于差异分析和通路富集。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 58,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "离子模式",
+                  "主要参数": "正离子（ESI+）和/或负离子（ESI-）模式分别分析。"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "质量范围",
+                  "主要参数": "m/z 50-1500（推荐范围）；分辨率≥30,000（FWHM at m/z 200，推荐Q-TOF或Orbitrap）；MS/MS采集DDA（TopN=5-10）或DIA模式；色谱柱C18反相柱（推荐2.1×100mm, 1.7-1.8μm）。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "XCMS峰检测参数",
+                  "主要参数": "方法centWave（高分辨数据推荐）；ppm质量容差默认10 ppm；peakwidth峰宽范围c(5,30)秒；snthresh信噪比阈值默认6；prefilter预过滤阈值c(3,5000)（至少3个连续扫描，强度>5000）；mzdiff m/z合并容差默认0.01 Da；bw保留时间分组带宽默认5秒。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "数据预处理参数",
+                  "主要参数": "空白过滤样本/空白峰面积比≥3或信号强度比≥5；QC样本RSD过滤QC样本中RSD>30%的代谢物特征剔除；缺失值处理至少在50%样本中检出的特征保留，缺失值用1/5最小正值或kNN插补；归一化PQN（Probabilistic Quotient Normalization）或LOESS局部加权回归归一化。"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "代谢物鉴定参数",
+                  "主要参数": "一级鉴定（Level 1）与标准品保留时间和MS/MS谱图匹配；二级鉴定（Level 2）与谱库（MoNA、HMDB、MassBank）MS/MS谱图匹配，dot product ≥ 0.7；三级鉴定（Level 3）基于精确质量和同位素分布推测分子式；四级鉴定（Level 4）未知特征（保留m/z和RT信息）。"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "差异分析参数",
+                  "主要参数": "数据格式log2转换后的峰面积矩阵；统计检验limma moderated t-test或Wilcoxon秩和检验；显著性阈值adjusted p-value < 0.05，VIP score > 1（PLS-DA），|log2FC| > 1。"
+                },
+                {
+                  "序号": "7",
+                  "分析步骤": "通路富集参数",
+                  "主要参数": "代谢通路数据库KEGG、SMPDB、HMDB；富集方法超几何检验或MSEA（Metabolite Set Enrichment Analysis）；显著富集阈值adjusted p-value < 0.05。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 59,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 17,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：定义最终目标输出，包括代谢物定量表、差异代谢物列表、通路富集结果和HTML报告。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "convert_raw：使用MSConvert或ProteoWizard将原始仪器格式（.raw/.d/.wiff）转换为开源格式（mzML/mzXML）。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "xcms_peak_detection：使用XCMS进行峰检测（findChromPeaks）、保留时间对齐（adjustRtime）和峰分组（groupChromPeaks）。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "camera_annotation：使用CAMERA进行加合离子和同位素峰标注，减少假阳性特征。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "blank_filtering：基于空白样本过滤背景特征，去除色谱柱流失和溶剂杂质。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "ms2_feature_extraction：提取MS/MS谱图信息，生成MGF格式文件用于代谢物鉴定。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "spectral_library_search：使用MS-DIAL或MetFrag对MS/MS谱图进行谱库搜索鉴定。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "sirius_identification：使用SIRIUS进行碎片树分析和分子式预测。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "gnps_molecular_networking：基于GNPS构建分子网络进行结构类似物聚类和注释传播。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "data_preprocessing：QC-RSD过滤、缺失值处理和PQN归一化，生成标准化代谢物定量矩阵。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "differential_analysis：使用limma进行组间差异代谢物检测，结合PLS-DA计算VIP值。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "pathway_enrichment：对差异代谢物进行KEGG/SMPDB通路富集分析。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "multiqc：汇总各步骤质控统计结果，生成MultiQC HTML报告。"
+                },
+                {
+                  "序号": "规则十四",
+                  "内容": "collect_report_statistics：收集峰检测、鉴定和差异分析统计，生成报告JSON。"
+                },
+                {
+                  "序号": "规则十五",
+                  "内容": "prepare_report_figures：绘制PCA/PLS-DA图、火山图、热图和通路富集气泡图。"
+                },
+                {
+                  "序号": "规则十六",
+                  "内容": "render_html_report：整合统计JSON、图形和HTML模板，生成中文或英文代谢组分析报告。"
+                },
+                {
+                  "序号": "规则十七",
+                  "内容": "report_only：作为仅生成报告的目标规则。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_id": "section_10_",
+      "title": "10. 影像组数据分析标准",
+      "description": "",
+      "sections": [
+        {
+          "section_id": "section_10_1",
+          "title": "10.1放射影像组学数据分析标准",
+          "description": "",
+          "modules": [
+            {
+              "module_label": "objective",
+              "title": "（1）主要目标",
+              "content": "放射影像组学（Radiomics）数据分析的标准流程是指从CT、MRI或PET医学影像数据出发，通过感兴趣区域（ROI）分割、高通量影像特征提取、特征筛选和机器学习建模，最终获得影像标志物或免疫治疗疗效预测模型的过程。在免疫力研究领域，放射影像组学可用于肿瘤免疫微环境的无创评估、免疫治疗疗效预测和免疫相关不良事件的早期预警。"
+            },
+            {
+              "module_label": "software_versions",
+              "title": "（2）软件及版本",
+              "content": ""
+            },
+            {
+              "module_label": "analysis_parameters",
+              "title": "（3）主要分析参数",
+              "content": ""
+            },
+            {
+              "module_label": "workflow",
+              "title": "（4）工作流程",
+              "content": ""
+            }
+          ],
+          "tables": [
+            {
+              "semantic_label": "software_versions",
+              "table_id_in_doc": 60,
+              "headers": [
+                "序号",
+                "软件名称",
+                "推荐版本",
+                "功能描述"
+              ],
+              "row_count": 7,
+              "data": [
+                {
+                  "序号": "1",
+                  "软件名称": "PyRadiomics",
+                  "推荐版本": "3.1+",
+                  "功能描述": "影像组学特征提取工具，支持从CT/MRI/PET影像中提取形状、一阶、纹理和小波特征。"
+                },
+                {
+                  "序号": "2",
+                  "软件名称": "3D Slicer",
+                  "推荐版本": "5.6+",
+                  "功能描述": "医学影像可视化和交互式分割平台，集成PyRadiomics扩展。"
+                },
+                {
+                  "序号": "3",
+                  "软件名称": "ITK-SNAP",
+                  "推荐版本": "4.0+",
+                  "功能描述": "医学影像半自动分割工具。"
+                },
+                {
+                  "序号": "4",
+                  "软件名称": "nnU-Net",
+                  "推荐版本": "2.2+",
+                  "功能描述": "深度学习医学影像分割框架，用于自动ROI分割。"
+                },
+                {
+                  "序号": "5",
+                  "软件名称": "SimpleITK",
+                  "推荐版本": "2.3+",
+                  "功能描述": "医学影像I/O和预处理库。"
+                },
+                {
+                  "序号": "6",
+                  "软件名称": "Python",
+                  "推荐版本": "Python3",
+                  "功能描述": "影像组学分析和机器学习建模运行环境。"
+                },
+                {
+                  "序号": "7",
+                  "软件名称": "R",
+                  "推荐版本": "4.4+",
+                  "功能描述": "统计分析和特征选择运行环境。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "analysis_parameters",
+              "table_id_in_doc": 61,
+              "headers": [
+                "序号",
+                "分析步骤",
+                "主要参数"
+              ],
+              "row_count": 6,
+              "data": [
+                {
+                  "序号": "1",
+                  "分析步骤": "图像采集参数",
+                  "主要参数": "影像模态CT（增强/平扫）、MRI（T1/T2/DWI/DCE）、PET（FDG/免疫PET）；层厚CT建议≤2.5mm，MRI建议≤5mm；重建核软组织核（CT）；像素大小要求体素为各向同性（推荐1×1×1mm³）。"
+                },
+                {
+                  "序号": "2",
+                  "分析步骤": "图像预处理参数",
+                  "主要参数": "灰度离散化binWidth=25 HU（CT），binWidth=5（MRI）；重采样等距重采样至1×1×1mm³（B-spline插值）；强度归一化MRI使用Z-score或Nyul直方图匹配归一化；偏置场校正（MRI）N4ITK偏置场校正。"
+                },
+                {
+                  "序号": "3",
+                  "分析步骤": "ROI分割参数",
+                  "主要参数": "分割方式人工勾画（≥2名放射科医师独立完成，ICC评估一致性）、半自动（区域生长、水平集）或全自动（nnU-Net）；ROI类别原发肿瘤全容积（primary GTV）、转移灶、正常器官（如脾脏）和瘤周区域（肿瘤边界外3-10mm）。"
+                },
+                {
+                  "序号": "4",
+                  "分析步骤": "特征提取参数",
+                  "主要参数": "特征类型形状特征、一阶统计特征、纹理特征（GLCM、GLRLM、GLSZM、GLDM、NGTDM）、小波变换特征；滤波器小波（Wavelet）、高斯拉普拉斯（LoG，sigma=1.0-5.0mm）、平方（Square）、平方根（SquareRoot）、对数（Logarithm）、指数（Exponential）；每例ROI特征数约1,300-1,800个特征。"
+                },
+                {
+                  "序号": "5",
+                  "分析步骤": "特征筛选参数",
+                  "主要参数": "稳定性评估基于测试-重测或多次分割的ICC（Intraclass Correlation Coefficient），保留ICC>0.75的特征；冗余去除相关系数>0.9的特征对中删除一个；特征选择LASSO、mRMR（最大相关最小冗余）、Boruta或递归特征消除（RFE）。"
+                },
+                {
+                  "序号": "6",
+                  "分析步骤": "建模与评估参数",
+                  "主要参数": "模型类型逻辑回归、随机森林、支持向量机、XGBoost、Cox比例风险模型；交叉验证5折或10折分层交叉验证（重复100次）；评估指标AUC、灵敏度、特异度、阳性预测值、阴性预测值、校准曲线；独立验证外部验证集AUC≥0.70为可接受水平。"
+                }
+              ]
+            },
+            {
+              "semantic_label": "workflow_rules",
+              "table_id_in_doc": 62,
+              "headers": [
+                "序号",
+                "内容"
+              ],
+              "row_count": 13,
+              "data": [
+                {
+                  "序号": "规则一",
+                  "内容": "all：定义最终目标输出，包括影像组学特征矩阵、特征筛选结果、预测模型和HTML报告。"
+                },
+                {
+                  "序号": "规则二",
+                  "内容": "dicom_conversion：将DICOM格式影像转换为NIfTI格式。"
+                },
+                {
+                  "序号": "规则三",
+                  "内容": "image_preprocessing：灰度离散化、重采样和强度归一化。"
+                },
+                {
+                  "序号": "规则四",
+                  "内容": "roi_segmentation：通过nnU-Net自动分割或读取人工勾画ROI。"
+                },
+                {
+                  "序号": "规则五",
+                  "内容": "feature_extraction：使用PyRadiomics提取形状、一阶、纹理和小波特征。"
+                },
+                {
+                  "序号": "规则六",
+                  "内容": "feature_stability：计算测试-重测ICC，过滤不稳定特征。"
+                },
+                {
+                  "序号": "规则七",
+                  "内容": "dimensionality_reduction：高相关特征去冗余和LASSO特征选择。"
+                },
+                {
+                  "序号": "规则八",
+                  "内容": "model_training：训练多种机器学习模型并进行交叉验证。"
+                },
+                {
+                  "序号": "规则九",
+                  "内容": "model_evaluation：评估模型区分度、校准度和临床净获益。"
+                },
+                {
+                  "序号": "规则十",
+                  "内容": "collect_report_statistics：收集影像质控、特征和模型评估统计。"
+                },
+                {
+                  "序号": "规则十一",
+                  "内容": "prepare_report_figures：绘制ROC曲线、校准曲线、决策曲线和特征重要性图。"
+                },
+                {
+                  "序号": "规则十二",
+                  "内容": "render_html_report：整合统计和图形，生成中文或英文放射影像组学分析报告。"
+                },
+                {
+                  "序号": "规则十三",
+                  "内容": "report_only：作为仅生成报告的目标规则。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_chapters": 10,
+    "total_analysis_standards": 21,
+    "total_tables": 63,
+    "total_modules": 84,
+    "references_count": 0
+  }
+}

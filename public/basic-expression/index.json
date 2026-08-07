@@ -1,0 +1,37 @@
+[
+  {
+    "datasetKey": "LDP00001_LDD00001",
+    "file": "LDP00001_LDD00001_expression.json",
+    "matrixFile": "/basic-expression/LDP00001_LDD00001_expression.tsv",
+    "genes": 60676,
+    "samples": 33
+  },
+  {
+    "datasetKey": "LDP00004_LDD00004",
+    "file": "LDP00004_LDD00004_expression.json",
+    "matrixFile": "/basic-expression/LDP00004_LDD00004_expression.tsv",
+    "genes": 60676,
+    "samples": 130
+  },
+  {
+    "datasetKey": "LDP00005_LDD00005",
+    "file": "LDP00005_LDD00005_expression.json",
+    "matrixFile": "/basic-expression/LDP00005_LDD00005_expression.tsv",
+    "genes": 60768,
+    "samples": 25
+  },
+  {
+    "datasetKey": "LDP00006_LDD00006",
+    "file": "LDP00006_LDD00006_expression.json",
+    "matrixFile": "/basic-expression/LDP00006_LDD00006_expression.tsv",
+    "genes": 60676,
+    "samples": 100
+  },
+  {
+    "datasetKey": "LDP00007_LDD00007",
+    "file": "LDP00007_LDD00007_expression.json",
+    "matrixFile": "/basic-expression/LDP00007_LDD00007_expression.tsv",
+    "genes": 60676,
+    "samples": 286
+  }
+]

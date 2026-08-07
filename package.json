@@ -4,9 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:basic": "node scripts/generate-basic-visualization.mjs",
+    "generate:expression": "node scripts/generate-expression-index.mjs",
+    "generate:single-cell": "node scripts/generate-single-cell-visualization.mjs",
+    "generate:single-cell-expression": "node --max-old-space-size=4096 scripts/generate-single-cell-expression-index.mjs",
+    "generate:tcr": "node scripts/generate-tcr-repertoire.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

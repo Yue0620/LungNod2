@@ -1,0 +1,639 @@
+project	dataset	sample	label
+LDP00001	LDD00001	LDS00001	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00002	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00003	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00004	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00005	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00006	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00007	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00008	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00009	Squamous Cell Carcinoma
+LDP00001	LDD00001	LDS00010	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00011	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00012	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00013	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00014	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00015	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00016	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00017	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00018	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00019	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00020	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00021	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00022	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00023	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00024	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00025	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00026	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00027	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00028	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00029	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00030	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00031	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00032	Lung Adenocarcinoma
+LDP00001	LDD00001	LDS00033	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00034	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00035	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00036	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00037	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00038	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00039	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00040	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00041	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00042	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00043	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00044	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00045	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00046	Lung Adenocarcinoma
+LDP00002	LDD00002	LDS00047	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00048	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00049	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00050	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00051	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00052	Non-tumour Involved Lung
+LDP00003	LDD00003	LDS00053	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00054	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00055	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00056	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00057	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00058	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00059	Non-tumour Involved Lung
+LDP00003	LDD00003	LDS00060	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00061	Non-tumour Involved Lung
+LDP00003	LDD00003	LDS00062	Non-tumour Involved Lung
+LDP00003	LDD00003	LDS00063	Lung Adenocarcinoma
+LDP00003	LDD00003	LDS00064	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00065	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00066	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00067	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00068	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00069	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00070	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00071	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00072	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00073	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00074	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00075	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00076	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00077	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00078	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00079	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00080	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00081	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00082	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00083	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00084	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00085	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00086	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00087	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00088	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00089	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00090	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00091	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00092	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00093	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00094	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00095	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00096	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00097	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00098	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00099	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00100	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00101	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00102	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00103	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00104	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00105	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00106	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00107	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00108	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00109	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00110	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00111	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00112	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00113	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00114	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00115	Non-small cell lung cancer
+LDP00004	LDD00004	LDS00116	Non-small cell lung cancer
+LDP00004	LDD00004	LDS00117	Non-small cell lung cancer
+LDP00004	LDD00004	LDS00118	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00119	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00120	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00121	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00122	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00123	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00124	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00125	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00126	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00127	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00128	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00129	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00130	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00131	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00132	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00133	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00134	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00135	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00136	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00137	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00138	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00139	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00140	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00141	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00142	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00143	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00144	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00145	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00146	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00147	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00148	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00149	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00150	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00151	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00152	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00153	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00154	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00155	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00156	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00157	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00158	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00159	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00160	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00161	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00162	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00163	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00164	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00165	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00166	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00167	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00168	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00169	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00170	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00171	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00172	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00173	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00174	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00175	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00176	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00177	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00178	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00179	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00180	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00181	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00182	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00183	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00184	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00185	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00186	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00187	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00188	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00189	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00190	Squamous Cell Carcinoma
+LDP00004	LDD00004	LDS00191	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00192	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00193	Lung Adenocarcinoma
+LDP00004	LDD00004	LDS00194	Lung Adenocarcinoma
+LDP00005	LDD00005	LDS00195	Lung Cancer
+LDP00005	LDD00005	LDS00196	Lung Cancer
+LDP00005	LDD00005	LDS00197	Lung Cancer
+LDP00005	LDD00005	LDS00198	Lung Cancer
+LDP00005	LDD00005	LDS00199	Lung Cancer
+LDP00005	LDD00005	LDS00200	Lung Cancer
+LDP00005	LDD00005	LDS00201	Lung Cancer
+LDP00005	LDD00005	LDS00202	Lung Cancer
+LDP00005	LDD00005	LDS00203	Lung Cancer
+LDP00005	LDD00005	LDS00204	Lung Cancer
+LDP00005	LDD00005	LDS00205	Lung Cancer
+LDP00005	LDD00005	LDS00206	Lung Cancer
+LDP00005	LDD00005	LDS00207	Lung Cancer
+LDP00005	LDD00005	LDS00208	Lung Cancer
+LDP00005	LDD00005	LDS00209	Lung Cancer
+LDP00005	LDD00005	LDS00210	Lung Cancer
+LDP00005	LDD00005	LDS00211	Lung Cancer
+LDP00005	LDD00005	LDS00212	Lung Cancer
+LDP00005	LDD00005	LDS00213	Lung Cancer
+LDP00005	LDD00005	LDS00214	Lung Cancer
+LDP00005	LDD00005	LDS00215	Lung Cancer
+LDP00005	LDD00005	LDS00216	Lung Cancer
+LDP00005	LDD00005	LDS00217	Lung Cancer
+LDP00005	LDD00005	LDS00218	Lung Cancer
+LDP00005	LDD00005	LDS00219	Lung Cancer
+LDP00006	LDD00006	LDS00220	Small-cell lung carcinoma
+LDP00006	LDD00006	LDS00221	Healthy control
+LDP00006	LDD00006	LDS00222	Small-cell lung carcinoma
+LDP00006	LDD00006	LDS00223	Healthy control
+LDP00006	LDD00006	LDS00224	Healthy control
+LDP00006	LDD00006	LDS00225	Cervical squamous cell carcinoma
+LDP00006	LDD00006	LDS00226	Esophageal squamous cell carcinoma
+LDP00006	LDD00006	LDS00227	Healthy control
+LDP00006	LDD00006	LDS00228	Lung adenocarcinoma
+LDP00006	LDD00006	LDS00229	Healthy control
+LDP00006	LDD00006	LDS00230	Squamous Cell Carcinoma
+LDP00006	LDD00006	LDS00231	Healthy control
+LDP00006	LDD00006	LDS00232	Healthy control
+LDP00006	LDD00006	LDS00233	Papillary thyroid carcinoma
+LDP00006	LDD00006	LDS00234	Healthy control
+LDP00006	LDD00006	LDS00235	Papillary thyroid carcinoma
+LDP00006	LDD00006	LDS00236	Healthy control
+LDP00006	LDD00006	LDS00237	Papillary thyroid carcinoma
+LDP00006	LDD00006	LDS00238	Healthy control
+LDP00006	LDD00006	LDS00239	Papillary thyroid carcinoma
+LDP00006	LDD00006	LDS00240	Healthy control
+LDP00006	LDD00006	LDS00241	Papillary thyroid carcinoma
+LDP00006	LDD00006	LDS00242	Healthy control
+LDP00006	LDD00006	LDS00243	Healthy control
+LDP00006	LDD00006	LDS00244	Cervical squamous cell carcinoma
+LDP00006	LDD00006	LDS00245	Healthy control
+LDP00006	LDD00006	LDS00246	Gastric signet-ring cell carcinoma
+LDP00006	LDD00006	LDS00247	Healthy control
+LDP00006	LDD00006	LDS00248	Gastric signet-ring cell carcinoma
+LDP00006	LDD00006	LDS00249	Healthy control
+LDP00006	LDD00006	LDS00250	Gastric signet-ring cell carcinoma
+LDP00006	LDD00006	LDS00251	Healthy control
+LDP00006	LDD00006	LDS00252	Lung adenocarcinoma
+LDP00006	LDD00006	LDS00253	Healthy control
+LDP00006	LDD00006	LDS00254	Esophageal squamous cell carcinoma
+LDP00006	LDD00006	LDS00255	Healthy control
+LDP00006	LDD00006	LDS00256	Esophageal squamous cell carcinoma
+LDP00006	LDD00006	LDS00257	Healthy control
+LDP00006	LDD00006	LDS00258	Squamous Cell Carcinoma
+LDP00006	LDD00006	LDS00259	Healthy control
+LDP00006	LDD00006	LDS00260	Lung adenocarcinoma
+LDP00006	LDD00006	LDS00261	Healthy control
+LDP00006	LDD00006	LDS00262	Lung adenocarcinoma
+LDP00006	LDD00006	LDS00263	Healthy control
+LDP00006	LDD00006	LDS00264	Squamous Cell Carcinoma
+LDP00006	LDD00006	LDS00265	Healthy control
+LDP00006	LDD00006	LDS00266	Esophageal squamous cell carcinoma
+LDP00006	LDD00006	LDS00267	Healthy control
+LDP00006	LDD00006	LDS00268	Squamous Cell Carcinoma
+LDP00006	LDD00006	LDS00269	Healthy control
+LDP00006	LDD00006	LDS00270	Esophageal squamous cell carcinoma
+LDP00006	LDD00006	LDS00271	Healthy control
+LDP00006	LDD00006	LDS00272	Esophageal squamous cell carcinoma
+LDP00006	LDD00006	LDS00273	Healthy control
+LDP00006	LDD00006	LDS00274	Lung adenocarcinoma
+LDP00006	LDD00006	LDS00275	Healthy control
+LDP00006	LDD00006	LDS00276	Squamous Cell Carcinoma
+LDP00006	LDD00006	LDS00277	Healthy control
+LDP00006	LDD00006	LDS00278	Lung adenocarcinoma
+LDP00006	LDD00006	LDS00279	Healthy control
+LDP00006	LDD00006	LDS00280	Squamous Cell Carcinoma
+LDP00006	LDD00006	LDS00281	Small-cell lung carcinoma
+LDP00006	LDD00006	LDS00282	Healthy control
+LDP00006	LDD00006	LDS00283	Small-cell lung carcinoma
+LDP00006	LDD00006	LDS00284	Healthy control
+LDP00006	LDD00006	LDS00285	Small-cell lung carcinoma
+LDP00006	LDD00006	LDS00286	Healthy control
+LDP00006	LDD00006	LDS00287	Small-cell lung carcinoma
+LDP00006	LDD00006	LDS00288	Healthy control
+LDP00006	LDD00006	LDS00289	Cervical squamous cell carcinoma
+LDP00006	LDD00006	LDS00290	Healthy control
+LDP00006	LDD00006	LDS00291	Cervical squamous cell carcinoma
+LDP00006	LDD00006	LDS00292	Healthy control
+LDP00006	LDD00006	LDS00293	Cervical squamous cell carcinoma
+LDP00006	LDD00006	LDS00294	Healthy control
+LDP00006	LDD00006	LDS00295	Cervical squamous cell carcinoma
+LDP00006	LDD00006	LDS00296	Hepatocellular carcinoma
+LDP00006	LDD00006	LDS00297	Healthy control
+LDP00006	LDD00006	LDS00298	Hepatocellular carcinoma
+LDP00006	LDD00006	LDS00299	Healthy control
+LDP00006	LDD00006	LDS00300	Hepatocellular carcinoma
+LDP00006	LDD00006	LDS00301	Healthy control
+LDP00006	LDD00006	LDS00302	Hepatocellular carcinoma
+LDP00006	LDD00006	LDS00303	Healthy control
+LDP00006	LDD00006	LDS00304	Hepatocellular carcinoma
+LDP00006	LDD00006	LDS00305	Healthy control
+LDP00006	LDD00006	LDS00306	Hepatocellular carcinoma
+LDP00006	LDD00006	LDS00307	Healthy control
+LDP00006	LDD00006	LDS00308	Gastric adenocarcinoma
+LDP00006	LDD00006	LDS00309	Healthy control
+LDP00006	LDD00006	LDS00310	Gastric adenocarcinoma
+LDP00006	LDD00006	LDS00311	Healthy control
+LDP00006	LDD00006	LDS00312	Gastric adenocarcinoma
+LDP00006	LDD00006	LDS00313	Healthy control
+LDP00006	LDD00006	LDS00314	Gastric adenocarcinoma
+LDP00006	LDD00006	LDS00315	Healthy control
+LDP00006	LDD00006	LDS00316	Gastric adenocarcinoma
+LDP00006	LDD00006	LDS00317	Healthy control
+LDP00006	LDD00006	LDS00318	Gastric adenocarcinoma
+LDP00006	LDD00006	LDS00319	Healthy control
+LDP00007	LDD00007	LDS00320	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00321	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00322	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00323	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00324	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00325	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00326	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00327	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00328	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00329	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00330	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00331	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00332	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00333	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00334	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00335	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00336	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00337	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00338	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00339	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00340	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00341	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00342	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00343	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00344	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00345	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00346	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00347	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00348	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00349	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00350	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00351	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00352	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00353	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00354	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00355	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00356	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00357	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00358	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00359	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00360	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00361	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00362	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00363	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00364	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00365	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00366	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00367	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00368	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00369	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00370	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00371	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00372	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00373	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00374	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00375	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00376	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00377	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00378	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00379	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00380	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00381	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00382	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00383	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00384	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00385	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00386	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00387	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00388	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00389	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00390	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00391	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00392	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00393	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00394	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00395	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00396	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00397	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00398	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00399	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00400	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00401	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00402	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00403	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00404	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00405	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00406	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00407	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00408	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00409	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00410	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00411	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00412	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00413	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00414	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00415	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00416	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00417	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00418	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00419	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00420	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00421	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00422	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00423	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00424	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00425	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00426	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00427	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00428	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00429	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00430	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00431	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00432	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00433	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00434	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00435	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00436	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00437	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00438	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00439	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00440	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00441	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00442	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00443	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00444	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00445	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00446	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00447	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00448	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00449	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00450	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00451	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00452	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00453	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00454	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00455	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00456	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00457	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00458	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00459	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00460	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00461	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00462	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00463	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00464	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00465	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00466	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00467	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00468	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00469	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00470	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00471	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00472	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00473	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00474	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00475	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00476	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00477	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00478	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00479	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00480	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00481	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00482	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00483	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00484	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00485	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00486	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00487	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00488	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00489	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00490	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00491	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00492	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00493	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00494	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00495	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00496	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00497	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00498	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00499	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00500	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00501	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00502	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00503	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00504	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00505	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00506	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00507	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00508	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00509	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00510	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00511	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00512	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00513	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00514	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00515	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00516	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00517	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00518	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00519	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00520	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00521	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00522	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00523	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00524	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00525	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00526	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00527	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00528	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00529	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00530	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00531	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00532	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00533	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00534	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00535	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00536	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00537	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00538	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00539	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00540	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00541	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00542	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00543	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00544	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00545	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00546	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00547	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00548	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00549	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00550	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00551	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00552	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00553	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00554	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00555	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00556	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00557	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00558	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00559	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00560	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00561	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00562	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00563	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00564	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00565	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00566	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00567	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00568	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00569	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00570	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00571	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00572	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00573	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00574	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00575	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00576	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00577	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00578	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00579	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00580	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00581	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00582	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00583	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00584	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00585	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00586	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00587	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00588	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00589	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00590	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00591	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00592	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00593	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00594	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00595	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00596	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00597	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00598	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00599	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00600	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00601	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00602	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00603	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00604	Non-small cell lung cancer
+LDP00007	LDD00007	LDS00605	Non-small cell lung cancer
+LDP00001	LDD00008	LDS00606	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00607	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00608	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00609	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00610	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00611	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00612	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00613	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00614	Squamous Cell Carcinoma
+LDP00001	LDD00008	LDS00615	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00616	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00617	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00618	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00619	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00620	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00621	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00622	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00623	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00624	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00625	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00626	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00627	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00628	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00629	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00630	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00631	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00632	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00633	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00634	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00635	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00636	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00637	Lung Adenocarcinoma
+LDP00001	LDD00008	LDS00638	Lung Adenocarcinoma

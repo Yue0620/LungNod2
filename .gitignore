@@ -28,3 +28,17 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+# Local backups generated during analysis
+*.bak_*
+
+# Large raw bioinformatics artifacts should use Git LFS or external storage
+*.rds
+*.h5
+*.h5ad
+*.bam
+*.bai
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.mtx.gz
