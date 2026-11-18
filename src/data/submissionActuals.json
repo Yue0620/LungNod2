@@ -1,0 +1,86 @@
+{
+  "unavailable": [
+    "82541023",
+    "82541027",
+    "82541028",
+    "82541036",
+    "82541039",
+    "82541040",
+    "82541041",
+    "82541042",
+    "82541043",
+    "82541044",
+    "82541045"
+  ],
+  "matches": [
+    {
+      "rows": [
+        233
+      ],
+      "submitted": 20,
+      "accession": "HRA019882"
+    },
+    {
+      "rows": [
+        237
+      ],
+      "submitted": 10,
+      "accession": "HRA019401"
+    },
+    {
+      "rows": [
+        238
+      ],
+      "submitted": 10,
+      "accession": "HRA019401"
+    }
+  ],
+  "files": [
+    {
+      "projectId": "82541026",
+      "period": "2026.1-6",
+      "type": "Flow Cytometry",
+      "subtype": "Flow Cytometry",
+      "accession": "OMIX018176",
+      "submitted": 20,
+      "outsidePlan": false,
+      "rows": [
+        235
+      ]
+    },
+    {
+      "projectId": "82541026",
+      "period": "2026.1-6",
+      "type": "Other Type of Image Data",
+      "subtype": "Imaging data",
+      "accession": "OMIX018177",
+      "submitted": 20,
+      "outsidePlan": false,
+      "rows": [
+        234
+      ]
+    },
+    {
+      "projectId": "82541026",
+      "period": "2026.1-6",
+      "type": "Metabolome Data by Mass Spectrometry (MS)",
+      "subtype": "Metabolome Data",
+      "accession": "OMIX018178",
+      "submitted": 20,
+      "outsidePlan": false,
+      "rows": [
+        236
+      ]
+    },
+    {
+      "projectId": "82541026",
+      "period": "2026.7-12",
+      "type": "In Situ Gene Expression",
+      "subtype": "Genomics Data",
+      "accession": "OMIX018264",
+      "submitted": 8,
+      "outsidePlan": true,
+      "rows": []
+    }
+  ]
+}

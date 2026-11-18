@@ -28,8 +28,9 @@
       </section>
 
       <template v-if="rowData">
+        <TcrRepertoire v-if="isTcrDataset" />
         <SingleCellVisualization
-          v-if="isTranscriptome10x"
+          v-else-if="isSingleCellExpression"
           :project-id="String(route.params.projectId || '')"
           :dataset-id="String(route.params.datasetId || '')"
         />
@@ -40,7 +41,7 @@
         />
       </template>
 
-      <section v-if="rowData && !isTranscriptome10x" class="section-block">
+      <section v-if="rowData && !isSingleCellExpression && !isTcrDataset" class="section-block">
         <div class="section-title">{{ t('visualization') }}</div>
 
         <div v-if="loading" class="loading-wrapper">
@@ -128,6 +129,7 @@ import { currentLang } from '@/store/lang.js'
 import { fetchDataDetail } from '@/api/nodule'
 import BasicVisualization from '@/components/BasicVisualization.vue'
 import SingleCellVisualization from '@/components/SingleCellVisualization.vue'
+import TcrRepertoire from '@/views/TcrRepertoire.vue'
 
 const i18n = {
   zh: {
@@ -171,7 +173,16 @@ const router = useRouter()
 const activeTab = ref('estimate')
 const loading = ref(true)
 const rowData = ref(null)
-const isTranscriptome10x = computed(() => String(rowData.value?.omicsType || '').toLowerCase() === 'transcriptome_10x')
+const datasetTypeText = computed(() => [
+  rowData.value?.omicsType,
+  rowData.value?.dataFormat,
+  rowData.value?.strategy,
+  rowData.value?.datasetName
+].filter(Boolean).join(' ').toLowerCase())
+const isTcrDataset = computed(() => /\btcr\b|scrna_tcr|single[-_\s]?cell[-_\s]?tcr|vdj/.test(datasetTypeText.value))
+const isSingleCellExpression = computed(() => (
+  String(rowData.value?.omicsType || '').toLowerCase() === 'transcriptome_10x' && !isTcrDataset.value
+))
 const estimateData = ref([])
 const mcpData = ref([])
 const xcellData = ref([])

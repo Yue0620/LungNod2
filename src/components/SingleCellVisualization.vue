@@ -62,7 +62,8 @@
                 reserve-keyword
                 :remote-method="searchGenes"
                 :loading="expressionIndexLoading || geneExpressionLoading"
-                :placeholder="t('searchGene')"
+                :disabled="Boolean(expressionMatrixError)"
+                :placeholder="expressionMatrixError || t('searchGene')"
               >
                 <el-option v-for="gene in displayGeneOptions" :key="gene.geneId" :label="gene.label" :value="gene.geneId" />
               </el-select>
@@ -89,12 +90,13 @@
                 <el-button size="small" text @click="downloadChart(geneChart, chartFileName('gene_expression_plot'), 'svg')">SVG</el-button>
               </div>
             </div>
-            <el-empty v-if="!selectedGeneId" class="gene-empty" :description="t('selectGeneForPlot')" :image-size="56" />
+            <el-empty v-if="expressionMatrixError" class="gene-empty" :description="expressionMatrixError" :image-size="56" />
+            <el-empty v-else-if="!selectedGeneId" class="gene-empty" :description="t('selectGeneForPlot')" :image-size="56" />
             <div v-else ref="geneChartRef" class="single-cell-chart" />
           </div>
         </div>
 
-        <div v-if="selectedGene && expressionValues" class="expression-box-panel">
+        <div v-if="selectedGene" class="expression-box-panel" v-loading="geneExpressionLoading">
           <div class="box-header">
             <div>
               <div class="chart-title">{{ selectedGene.gene }} {{ t('expressionByGroup') }}</div>
@@ -243,26 +245,26 @@ const props = defineProps({
 
 const i18n = {
   zh: {
-    singleCellBasic: '单细胞基础可视化',
-    empty: '当前数据集没有可用的单细胞可视化结果',
-    cells: '细胞数',
-    genes: '基因数',
-    samples: '样本数',
-    labels: '细胞类型',
-    qc: 'QC 中位数',
-    filter: '过滤',
+    singleCellBasic: 'Single-cell Basic Visualization',
+    empty: 'No single-cell visualization result is available for this dataset',
+    cells: 'Cells',
+    genes: 'Genes',
+    samples: 'Samples',
+    labels: 'Cell Types',
+    qc: 'QC median',
+    filter: 'Filter',
     controls: 'Controls',
-    projection: '降维图',
-    groupBy: '细胞分组',
-    geneExpression: '基因表达',
-    searchGene: '搜索基因名或 Gene ID',
-    expressionByGroup: '在细胞群中的表达',
-    expressionScale: '表达值为 log1p(raw count)，0 表示该细胞未检测到表达。',
-    cellGroupPlot: 'Cell Group 分布图',
-    geneExpressionPlot: 'Gene Expression 分布图',
-    selectGeneForPlot: '请选择一个基因以显示表达分布图。',
-    sample: '样本',
-    label: '细胞类型',
+    projection: 'Projection',
+    groupBy: 'Cell Group',
+    geneExpression: 'Gene Expression',
+    searchGene: 'Search gene symbol or Gene ID',
+    expressionByGroup: 'expression across cell groups',
+    expressionScale: 'Expression is log1p(raw count); 0 means expression was not detected in that cell.',
+    cellGroupPlot: 'Cell Group Plot',
+    geneExpressionPlot: 'Gene Expression Plot',
+    selectGeneForPlot: 'Select a gene to show expression distribution.',
+    sample: 'Sample',
+    label: 'Cell Type',
     cluster: 'Cluster',
     nCount: 'nCount_RNA',
     nFeature: 'nFeature_RNA',
@@ -297,6 +299,7 @@ const i18n = {
 }
 
 const t = (key) => i18n[currentLang.value]?.[key] || key
+const publicAssetUrl = (value) => `${import.meta.env.BASE_URL}${String(value || '').replace(/^\/+/, '')}`
 const modules = import.meta.glob('@/data/single-cell/*_single_cell.json', { import: 'default' })
 
 const loading = ref(false)
@@ -304,6 +307,7 @@ const dataset = ref(null)
 const expressionIndex = ref(null)
 const expressionIndexLoading = ref(false)
 const geneExpressionLoading = ref(false)
+const expressionMatrixError = ref('')
 const geneOptions = ref([])
 const selectedGeneId = ref('')
 const expressionValues = ref(null)
@@ -325,6 +329,7 @@ let boxChart = null
 let compositionChart = null
 let pathwayChart = null
 let communicationChart = null
+const EXPRESSION_MATRIX_UNAVAILABLE = 'Expression matrix file is missing or incomplete. Cell group plot is still available.'
 let loadToken = 0
 let expressionToken = 0
 let skipGeneWatch = false
@@ -569,7 +574,11 @@ async function loadDataset(value) {
       selectedGeneId.value = defaultGene.geneId
       await nextTick()
       skipGeneWatch = false
-      await loadGeneExpression()
+      try {
+        await loadGeneExpression()
+      } catch (e) {
+        console.warn('Gene expression loading failed', e)
+      }
     }
   } finally {
     if (token === loadToken) loading.value = false
@@ -578,25 +587,61 @@ async function loadDataset(value) {
 
 async function loadExpressionIndex(value) {
   expressionIndex.value = null
+  expressionMatrixError.value = ''
   geneOptions.value = []
   expressionIndexLoading.value = true
   try {
-    const response = await fetch(`/single-cell-expression/${value}_expression_index.json`)
+    const response = await fetch(publicAssetUrl(`single-cell-expression/${value}_expression_index.json`))
     if (!response.ok) return
-    expressionIndex.value = await response.json()
+    const index = await response.json()
+    const matrixSize = await fetchContentLength(publicAssetUrl(index.matrixFile))
+    const expectedSize = expectedMatrixSize(index)
+    if (matrixSize !== null && expectedSize > 0 && matrixSize < expectedSize) {
+      expressionMatrixError.value = EXPRESSION_MATRIX_UNAVAILABLE
+      return
+    }
+    expressionIndex.value = index
     searchGenes('')
   } finally {
     expressionIndexLoading.value = false
   }
 }
 
+async function fetchContentLength(url) {
+  if (!url) return null
+  try {
+    const response = await fetch(url, { method: 'HEAD' })
+    if (!response.ok) return null
+    const length = Number(response.headers.get('content-length'))
+    return Number.isFinite(length) ? length : null
+  } catch (e) {
+    console.warn('Expression matrix size check failed', e)
+    return null
+  }
+}
+
+function expectedMatrixSize(index) {
+  const genes = index?.genes || []
+  let maxEnd = 0
+  for (const gene of genes) {
+    const end = Number(gene.offset || 0) + Number(gene.length || 0)
+    if (Number.isFinite(end) && end > maxEnd) maxEnd = end
+  }
+  return maxEnd
+}
+
 function defaultExpressionGene() {
+  if (expressionMatrixError.value) return null
   const genes = expressionIndex.value?.genes || []
   if (!genes.length) return null
   return genes.find(gene => gene.gene.toUpperCase() === 'EPCAM') || [...genes].sort((a, b) => b.nnz - a.nnz)[0]
 }
 
 function searchGenes(query) {
+  if (expressionMatrixError.value) {
+    geneOptions.value = []
+    return
+  }
   const genes = expressionIndex.value?.genes || []
   const q = String(query || '').trim().toLowerCase()
   if (!q) {
@@ -622,19 +667,26 @@ async function loadGeneExpression() {
   }
   geneExpressionLoading.value = true
   try {
-    const end = gene.offset + gene.length - 1
-    const response = await fetch(expressionIndex.value.matrixFile, { headers: { Range: `bytes=${gene.offset}-${end}` } })
-    if (response.status !== 206) throw new Error(`Range request failed with status ${response.status}`)
-    const buffer = await response.arrayBuffer()
-    if (token !== expressionToken) return
-    const view = new DataView(buffer)
     const values = new Float32Array(expressionIndex.value.cellCount)
-    for (let offset = 0; offset < buffer.byteLength; offset += expressionIndex.value.recordSize) {
-      const cellIndex = view.getUint32(offset, true)
-      const count = expressionIndex.value.valueBytes === 2 ? view.getUint16(offset + 4, true) : view.getUint32(offset + 4, true)
-      values[cellIndex] = Math.log1p(count)
+    if (gene.length > 0) {
+      const end = gene.offset + gene.length - 1
+      const response = await fetch(publicAssetUrl(expressionIndex.value.matrixFile), { headers: { Range: `bytes=${gene.offset}-${end}` } })
+      if (response.status !== 206) throw new Error(`Range request failed with status ${response.status}`)
+      const buffer = await response.arrayBuffer()
+      if (token !== expressionToken) return
+      const view = new DataView(buffer)
+      for (let offset = 0; offset < buffer.byteLength; offset += expressionIndex.value.recordSize) {
+        const cellIndex = view.getUint32(offset, true)
+        const count = expressionIndex.value.valueBytes === 2 ? view.getUint16(offset + 4, true) : view.getUint32(offset + 4, true)
+        values[cellIndex] = Math.log1p(count)
+      }
     }
     expressionValues.value = values
+  } catch (e) {
+    expressionMatrixError.value = EXPRESSION_MATRIX_UNAVAILABLE
+    selectedGeneId.value = ''
+    expressionValues.value = null
+    console.warn('Gene expression loading failed', e)
   } finally {
     geneExpressionLoading.value = false
   }
@@ -807,6 +859,7 @@ function renderGroupChart() {
 function renderGeneChart() {
   const el = geneChartRef.value
   if (!el || !dataset.value || !selectedGene.value || !expressionValues.value) return
+  geneChart = disposeDetachedChart(geneChart, el)
   if (!geneChart) geneChart = echarts.init(el)
 
   const [xName, yName] = projectionAxisNames()
@@ -845,6 +898,14 @@ function renderGeneChart() {
     series: buildExpressionSeries()
   }, true)
   geneChart.resize()
+}
+
+function disposeDetachedChart(chart, el) {
+  if (chart && chart.getDom && chart.getDom() !== el) {
+    chart.dispose()
+    return null
+  }
+  return chart
 }
 
 function axisOption(name, vertical) {
@@ -933,6 +994,7 @@ function renderExpressionBoxplot() {
     nextTick(renderExpressionBoxplot)
     return
   }
+  boxChart = disposeDetachedChart(boxChart, el)
   if (!boxChart) boxChart = echarts.init(el, null, { renderer: 'svg' })
 
   const rows = buildBoxplotRows(values)
@@ -1115,7 +1177,13 @@ function renderPathwayChart() {
     series: [{
       type: 'bar',
       data: top.map(row => row.totalProbability),
-      itemStyle: { color: '#42b983' }
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+          { offset: 0, color: '#d1fae5' },
+          { offset: 0.5, color: '#42b983' },
+          { offset: 1, color: '#047857' }
+        ])
+      }
     }]
   }, true)
   pathwayChart.resize()
@@ -1128,10 +1196,14 @@ function renderCommunicationHeatmap() {
   if (!communicationChart) communicationChart = echarts.init(el)
 
   const groups = cellChat.groups
-  const maxValue = Math.max(1, ...(cellChat.edges || []).map(edge => edge.value))
   const data = (cellChat.edges || [])
-    .map(edge => [groups.indexOf(edge.target), groups.indexOf(edge.source), edge.value, edge.count])
-    .filter(item => item[0] >= 0 && item[1] >= 0)
+    .map(edge => [groups.indexOf(edge.target), groups.indexOf(edge.source), Number(edge.value), edge.count])
+    .filter(item => item[0] >= 0 && item[1] >= 0 && Number.isFinite(item[2]))
+  const weights = data.map(item => item[2])
+  const rawMinValue = weights.length ? Math.min(...weights) : 0
+  const rawMaxValue = weights.length ? Math.max(...weights) : 1
+  const minValue = Math.floor(rawMinValue)
+  const maxValue = Math.ceil(rawMaxValue)
 
   communicationChart.setOption({
     animation: false,
@@ -1151,8 +1223,10 @@ function renderCommunicationHeatmap() {
     xAxis: { type: 'category', data: groups, axisLabel: { rotate: 45, fontSize: 9, formatter: value => compactName(value, 14) } },
     yAxis: { type: 'category', data: groups, axisLabel: { fontSize: 9, formatter: value => compactName(value, 16) } },
     visualMap: {
-      min: 0,
+      min: minValue,
       max: maxValue,
+      dimension: 2,
+      precision: 2,
       calculable: true,
       orient: 'vertical',
       right: 8,
@@ -1160,12 +1234,13 @@ function renderCommunicationHeatmap() {
       itemWidth: 12,
       itemHeight: 150,
       textStyle: { fontSize: 10, color: '#64748b' },
-      inRange: { color: ['#f8fafc', '#d1fae5', '#42b983', '#047857'] }
+      inRange: { color: ['#2166ac', '#67a9cf', '#f7f7f7', '#fddbc7', '#ef8a62', '#b2182b'] }
     },
     series: [{
       type: 'heatmap',
       data,
-      emphasis: { itemStyle: { borderColor: '#0f172a', borderWidth: 1 } }
+      itemStyle: { borderColor: '#ffffff', borderWidth: 1 },
+      emphasis: { itemStyle: { borderColor: '#0f172a', borderWidth: 1.4 } }
     }]
   }, true)
   communicationChart.resize()

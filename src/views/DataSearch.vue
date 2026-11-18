@@ -257,7 +257,7 @@ const selectAll = () => { visibleColumns.value = allFlatColumns.value.map(c => c
 const resetToDefault = () => { visibleColumns.value = [...defaultCols] }
 const isNumeric = (v) => !isNaN(parseFloat(v)) && isFinite(v) && typeof v !== 'boolean'
 const formatNumber = (v) => parseFloat(v) % 1 === 0 ? v : parseFloat(v).toFixed(2)
-const getOmicsColor = (t) => ({'Transcriptome':'#3498db','Transcriptome_10x':'#7c3aed','scRNA_seq':'#9b59b6','Radiomics':'#e67e22','Spatial_Transcriptome':'#1abc9c'}[t] || '#42b983')
+const getOmicsColor = (t) => ({'Transcriptome':'#3498db','Transcriptome_10x':'#7c3aed','scRNA_seq':'#9b59b6','TCR':'#f59e0b','scTCR':'#f59e0b','Radiomics':'#e67e22','Spatial_Transcriptome':'#1abc9c'}[t] || '#42b983')
 const handleSortChange = ({ prop, order }) => { sortProp.value = prop; sortOrder.value = order; }
 const resetFilters = () => { filterForm.value = { projectId: '', omicsType: [], disease: '', tissue: '' }; filterText.value = ''; currentPage.value = 1; loadData() }
 const showDetail = (row) => {

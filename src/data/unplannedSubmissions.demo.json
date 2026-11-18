@@ -1,0 +1,92 @@
+[
+  {
+    "projectId": "82541035",
+    "period": "2026.7-12",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 12
+  },
+  {
+    "projectId": "82541035",
+    "period": "2027.1-6",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 8
+  },
+  {
+    "projectId": "82541028",
+    "period": "2026.7-12",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 15
+  },
+  {
+    "projectId": "82541028",
+    "period": "2027.1-6",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 11
+  },
+  {
+    "projectId": "82541045",
+    "period": "2026.7-12",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 18
+  },
+  {
+    "projectId": "82541045",
+    "period": "2027.1-6",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 14
+  },
+  {
+    "projectId": "82541023",
+    "period": "2026.7-12",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 21
+  },
+  {
+    "projectId": "82541023",
+    "period": "2027.1-6",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 17
+  },
+  {
+    "projectId": "82541036",
+    "period": "2026.7-12",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 24
+  },
+  {
+    "projectId": "82541036",
+    "period": "2027.1-6",
+    "type": "EPIGENOMIC",
+    "subtype": "ATAC-Seq",
+    "disease": "lung cancer",
+    "tissue": "lung",
+    "submitted": 20
+  }
+]

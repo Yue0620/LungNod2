@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const root = process.cwd()
-const sourceRoot = path.join(root, 'src/bcrdata')
+const sourceRoot = path.join(root, 'src/tcrdata')
 const outDir = path.join(root, 'src/data/tcr')
 const datasetKey = 'U41_PBMC_10x_TCR'
 const clonePath = path.join(sourceRoot, 'U41_clonal-assignment_clone-pass.tsv')

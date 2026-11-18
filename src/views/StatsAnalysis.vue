@@ -4,9 +4,11 @@
       <div class="action-bar">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>统计分析</el-breadcrumb-item>
+          <el-breadcrumb-item>统计</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
+
+      <SubmissionPlanDashboard />
 
       <!-- 1. 顶部数字看板 -->
       <el-row :gutter="20" class="stat-cards">
@@ -119,6 +121,7 @@
 import { ref, onMounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { fetchAnalysisStats } from '@/api/nodule'
+import SubmissionPlanDashboard from '@/components/SubmissionPlanDashboard.vue'
 
 const stats = ref({
   totalProjects: 0,

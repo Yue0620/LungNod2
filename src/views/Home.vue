@@ -56,6 +56,9 @@ const t = computed(() => dict[currentLang.value])
 // 将原本写死的 stages 绑定为动态的
 const lungStages = computed(() => t.value.stages)
 
+
+
+
 // --- 以下为原有的逻辑，无需改动 ---
 const activeIndex = ref(null)
 const pinnedIndex = ref(null)
@@ -213,12 +216,15 @@ onUnmounted(() => { stopAutoPlay() })
       </div>
     </section>
 
-    <!-- 特性介绍：改为循环渲染 t.features -->
-    <section class="features container">
-      <div v-for="(feat, idx) in t.features" :key="idx" class="feature-card">
-        <div class="icon-box">{{ feat.icon }}</div>
-        <h3>{{ feat.title }}</h3>
-        <p>{{ feat.desc }}</p>
+    <section class="home-overview container">
+      <div class="features">
+        <div v-for="(feat, idx) in t.features" :key="idx" class="feature-card">
+          <div class="icon-box" aria-hidden="true">{{ feat.icon }}</div>
+          <div class="feature-copy">
+            <h3>{{ feat.title }}</h3>
+            <p>{{ feat.desc }}</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -287,10 +293,20 @@ onUnmounted(() => { stopAutoPlay() })
 .slide-enter-active, .slide-leave-active { transition: all 0.4s ease; }
 .slide-enter-from, .slide-leave-to { opacity: 0; transform: translateY(-50%) scale(0.9); }
 
-.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; padding: 2rem 0; }
-.feature-card { background: #fff; padding: 3rem 2.5rem; border-radius: 20px; border: 1px solid #f1f5f9; transition: 0.4s; text-align: left; }
-.feature-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-color: #42b983; }
-.icon-box { font-size: 2.5rem; margin-bottom: 1.5rem; }
-.feature-card h3 { font-size: 1.5rem; color: #1e293b; margin-bottom: 1rem; }
-.feature-card p { color: #64748b; line-height: 1.7; font-size: 0.95rem; }
+.home-overview { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 26px 0 30px; align-items: stretch; }
+.features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; min-width: 0; }
+.feature-card { display: flex; align-items: center; gap: 14px; background: #fff; padding: 16px 18px; border-radius: 14px; border: 1px solid #edf2f0; text-align: left; transition: border-color 0.2s, box-shadow 0.2s; }
+.feature-card:hover { border-color: #b7dfca; box-shadow: 0 4px 16px rgba(44, 62, 80, 0.04); }
+.icon-box { flex-shrink: 0; width: 40px; height: 40px; display: grid; place-items: center; background: #f1f9f5; border-radius: 12px; font-size: 1.5rem; }
+.feature-card h3 { font-size: 0.95rem; color: #2c3e50; margin-bottom: 5px; line-height: 1.4; }
+.feature-card p { color: #7a8b9c; line-height: 1.55; font-size: 0.76rem; }
+@media (max-width: 1180px) {
+  .home-overview { grid-template-columns: minmax(0, 1fr); }
+  .features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .feature-card { align-items: flex-start; padding: 14px; gap: 10px; }
+}
+@media (max-width: 640px) {
+  .home-overview { gap: 16px; padding: 20px 0; }
+  .features { grid-template-columns: 1fr; }
+}
 </style>

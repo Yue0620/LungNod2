@@ -220,6 +220,7 @@ const i18n = {
 }
 
 const t = (key) => i18n[currentLang.value]?.[key] || key
+const publicAssetUrl = (value) => `${import.meta.env.BASE_URL}${String(value || '').replace(/^\/+/, '')}`
 
 const basicModules = import.meta.glob('@/data/basic/*_basic.json', { import: 'default' })
 const analysisLoading = ref(false)
@@ -368,7 +369,7 @@ async function loadExpressionIndex(value) {
   expressionChart?.clear()
   expressionIndexLoading.value = true
   try {
-    const response = await fetch(`/basic-expression/${value}_expression.json`)
+    const response = await fetch(publicAssetUrl(`basic-expression/${value}_expression.json`))
     if (!response.ok) return
     expressionIndex.value = await response.json()
     searchGenes('')
@@ -379,7 +380,7 @@ async function loadExpressionIndex(value) {
 
 async function fetchExpressionRow(gene) {
   const end = gene.offset + gene.length - 1
-  const response = await fetch(expressionIndex.value.matrixFile, { headers: { Range: `bytes=${gene.offset}-${end}` } })
+  const response = await fetch(publicAssetUrl(expressionIndex.value.matrixFile), { headers: { Range: `bytes=${gene.offset}-${end}` } })
   const text = await response.text()
   const line = response.status === 206 ? text.trim() : text.split('\n').find(row => row.includes(`\t${gene.geneId}\t`) || row.startsWith(`${gene.gene}\t${gene.geneId}\t`))
   if (!line) return null
