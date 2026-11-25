@@ -14,5 +14,5 @@ defineProps({ value: { type: Object, required: true }, label: String, empty: Str
   </div>
 </template>
 <style scoped>
-.plan-progress{min-width:0}.progress-caption{display:flex;flex-direction:column;gap:4px;align-items:flex-start;font-variant-numeric:tabular-nums}.progress-caption b{color:#4c7c62;font-size:14px;font-weight:600}.progress-caption small{font-size:13px;color:#6d8074;white-space:nowrap}.progress-track{height:7px;background:#eaf1ec;border-radius:8px;margin-top:7px;overflow:hidden}.progress-track span{display:block;height:100%;background:#77c6a1;border-radius:inherit}.complete .progress-track span{background:#2da777}.complete b{color:#249766}.no-plan{color:#b2bfb6;font-size:14px}
+.plan-progress{min-width:0}.progress-caption{display:flex;flex-direction:column;gap:4px;align-items:flex-start;font-variant-numeric:tabular-nums}.progress-caption b{color:#4c7c62;font-size:16px;font-weight:600}.progress-caption small{font-size:15px;color:#6d8074;white-space:nowrap}.progress-track{height:7px;background:#eaf1ec;border-radius:8px;margin-top:7px;overflow:hidden}.progress-track span{display:block;height:100%;background:#77c6a1;border-radius:inherit}.complete .progress-track span{background:#2da777}.complete b{color:#249766}.no-plan{color:#b2bfb6;font-size:16px}
 </style>

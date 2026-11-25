@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { fetchStats } from '@/api/nodule'
+import SubmissionPlanDashboard from '@/components/SubmissionPlanDashboard.vue'
 import { useRouter } from 'vue-router'
 // 引入全局语言状态！
 import { currentLang } from '@/store/lang.js'
@@ -22,11 +23,6 @@ const dict = {
       { id: 2, name: '实性结节', label: 'Solid', file: 'Lung2.png', desc: '影像表现：高密度、边界清晰', detail: '结节内部完全被实性成分占据。需关注其直径增长及倍增时间。' },
       { id: 3, name: '磨玻璃结节', label: 'GGO', file: 'Lung3.png', desc: '影像表现：云雾状半透明影', detail: '典型亚实性结节（pGGN）。具有较高的早期腺癌风险。' },
       { id: 4, name: '恶性演变', label: 'Malignant', file: 'Lung4.png', desc: '影像表现：分叶征、毛刺征明显', detail: '提示病灶具有浸润性，需临床高度介入或手术治疗。' }
-    ],
-    features: [
-      { icon: '📊', title: '海量样本数据', desc: '收录超过万例经病理证实的肺结节病例，覆盖多种形态特征。' },
-      { icon: '🏷️', title: '多维精准标注', desc: '包含高分辨率 CT 影像、临床信息及病理结果数据。' },
-      { icon: '🧠', title: '智能辅助分析', desc: '集成前沿 AI 算法模型，提供自动化的结节检测与风险预测。' }
     ]
   },
   en: {
@@ -42,11 +38,6 @@ const dict = {
       { id: 2, name: 'Solid Nodule', label: 'Solid', file: 'Lung2.png', desc: 'Imaging: High density, clear boundaries', detail: 'Completely occupied by solid components. Monitor growth and doubling time.' },
       { id: 3, name: 'Ground Glass', label: 'GGO', file: 'Lung3.png', desc: 'Imaging: Cloudy translucent shadow', detail: 'Typical sub-solid nodule (pGGN). Higher risk of early adenocarcinoma.' },
       { id: 4, name: 'Malignancy', label: 'Malignant', file: 'Lung4.png', desc: 'Imaging: Lobulation & spiculation', detail: 'Indicates invasiveness, requires clinical intervention or surgery.' }
-    ],
-    features: [
-      { icon: '📊', title: 'Massive Data', desc: 'Over 10,000 pathologically confirmed lung nodule cases.' },
-      { icon: '🏷️', title: 'Precise Annotation', desc: 'Includes high-res CT, clinical info, and pathology data.' },
-      { icon: '🧠', title: 'Smart Analysis', desc: 'Integrated AI models for automated detection and risk prediction.' }
     ]
   }
 }
@@ -63,7 +54,8 @@ const lungStages = computed(() => t.value.stages)
 const activeIndex = ref(null)
 const pinnedIndex = ref(null)
 const showHint = ref(true)
-const statsData = ref({ samples: '---', projects: '---', datasets: '---' })
+const statsData = ref({ samples: '—', projects: '—', datasets: '—' })
+const statsError = ref(false)
 
 let rotationIdx = 0
 let autoPlayTimer = null
@@ -122,9 +114,12 @@ const handleMouseLeaveWrapper = () => {
 onMounted(async () => {
   try {
     const res = await fetchStats()
-    if (res) statsData.value = res
+    if (!res || !['samples', 'projects', 'datasets'].every(key => res[key] != null)) throw new Error('Invalid statistics response')
+    statsData.value = res
+    statsError.value = false
   } catch (error) {
-    statsData.value = { cases: '10,256+', images: '52,480+', integrity: '99.2%' }
+    statsData.value = { samples: '—', projects: '—', datasets: '—' }
+    statsError.value = true
   }
   startAutoPlay()
 })
@@ -148,7 +143,7 @@ onUnmounted(() => { stopAutoPlay() })
 
           <div class="stats-glass">
             <div class="stat-item">
-              <span class="number">{{ statsData.samples }}</span>
+              <span class="number" :title="statsError ? (currentLang === 'en' ? 'Could not load statistics' : '统计数据加载失败') : undefined">{{ statsData.samples }}</span>
               <span class="label">{{ t.statSamples }}</span>
             </div>
             <div class="divider"></div>
@@ -162,6 +157,7 @@ onUnmounted(() => { stopAutoPlay() })
               <span class="label">{{ t.statDatasets }}</span>
             </div>
           </div>
+          <p v-if="statsError" class="stats-error" role="status">{{ currentLang === 'en' ? 'Could not load statistics. Please try again later.' : '统计数据加载失败，请稍后重试。' }}</p>
         </div>
 
         <div class="hero-right">
@@ -216,21 +212,14 @@ onUnmounted(() => { stopAutoPlay() })
       </div>
     </section>
 
-    <section class="home-overview container">
-      <div class="features">
-        <div v-for="(feat, idx) in t.features" :key="idx" class="feature-card">
-          <div class="icon-box" aria-hidden="true">{{ feat.icon }}</div>
-          <div class="feature-copy">
-            <h3>{{ feat.title }}</h3>
-            <p>{{ feat.desc }}</p>
-          </div>
-        </div>
-      </div>
+    <section class="home-submission container" aria-label="Submission progress">
+      <SubmissionPlanDashboard collapsible />
     </section>
   </main>
 </template>
 
 <style scoped>
+.stats-error { margin-top: 10px; font-size: 14px; color: #9b542c; }
 /* 此处保留你原本的 CSS 样式代码，完全不需要改动，直接粘贴你之前的 <style scoped> 即可 */
 .main-content { overflow: hidden; }
 .hero { position: relative; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 30%, #e8f5e9 60%, #ffffff 100%); padding: 1rem 0; overflow: hidden; }
@@ -293,20 +282,48 @@ onUnmounted(() => { stopAutoPlay() })
 .slide-enter-active, .slide-leave-active { transition: all 0.4s ease; }
 .slide-enter-from, .slide-leave-to { opacity: 0; transform: translateY(-50%) scale(0.9); }
 
-.home-overview { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 26px 0 30px; align-items: stretch; }
-.features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; min-width: 0; }
-.feature-card { display: flex; align-items: center; gap: 14px; background: #fff; padding: 16px 18px; border-radius: 14px; border: 1px solid #edf2f0; text-align: left; transition: border-color 0.2s, box-shadow 0.2s; }
-.feature-card:hover { border-color: #b7dfca; box-shadow: 0 4px 16px rgba(44, 62, 80, 0.04); }
-.icon-box { flex-shrink: 0; width: 40px; height: 40px; display: grid; place-items: center; background: #f1f9f5; border-radius: 12px; font-size: 1.5rem; }
-.feature-card h3 { font-size: 0.95rem; color: #2c3e50; margin-bottom: 5px; line-height: 1.4; }
-.feature-card p { color: #7a8b9c; line-height: 1.55; font-size: 0.76rem; }
-@media (max-width: 1180px) {
-  .home-overview { grid-template-columns: minmax(0, 1fr); }
-  .features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .feature-card { align-items: flex-start; padding: 14px; gap: 10px; }
+
+
+.home-submission { padding-bottom: 30px; }
+/* Keep the hero proportions stable across desktop viewport widths. */
+.hero { padding: clamp(24px, 2.5vw, 48px) 0; }
+.hero-content { display: grid; grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr); gap: clamp(24px, 3vw, 56px); }
+.hero-left, .hero-right { min-width: 0; }
+.hero-title { font-size: clamp(48px, 4vw, 68px); margin-bottom: 24px; }
+.subtitle { font-size: clamp(17px, 1.15vw, 20px); margin-bottom: 28px; max-width: 600px; }
+.search-box { margin-bottom: 32px; width: 100%; }
+.search-box input { min-width: 0; padding: 18px 22px; }
+.search-btn { padding: 0 24px; flex-shrink: 0; white-space: nowrap; }
+.stats-glass { padding: 22px 28px; }
+.interaction-hint { font-size: 14px; line-height: 1.5; }
+.evolution-wrapper { gap: clamp(12px, 1vw, 20px); height: clamp(400px, 28vw, 480px); }
+.stage-card { flex-shrink: 0; width: clamp(90px, 6.3vw, 120px); height: clamp(330px, 23vw, 400px); }
+.stage-card.is-active { width: clamp(230px, 16vw, 300px); }
+.stage-overlay { left: 14px; gap: 10px; }
+.stage-name { font-size: 17px; }
+.info-popup { width: 260px; padding: 20px; }
+@media (max-width: 1100px) {
+  .hero-content { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .hero-left { max-width: 680px; width: 100%; }
+  .hero-right { align-items: center; }
+  .evolution-wrapper { justify-content: center; height: 390px; }
+  .stage-card { width: 110px; height: 340px; }
+  .stage-card.is-active { width: 260px; }
 }
 @media (max-width: 640px) {
-  .home-overview { gap: 16px; padding: 20px 0; }
-  .features { grid-template-columns: 1fr; }
+  .hero-title { font-size: 42px; }
+  .subtitle { font-size: 17px; }
+  .search-box input { padding: 16px; }
+  .search-btn { padding: 0 16px; }
+  .stats-glass { padding: 20px; }
+  .evolution-wrapper { gap: 8px; height: 320px; }
+  .stage-card { width: 54px; height: 280px; }
+  .stage-card.is-active { width: min(160px, calc(100vw - 218px)); }
+  .stage-name { font-size: 13px; letter-spacing: 0; }
+  .stage-num { font-size: 22px; }
+  .stage-overlay { left: 8px; bottom: 55px; }
+  .stage-label-bottom { font-size: 9px; letter-spacing: 0; }
+  .img-inner-box { border-radius: 32px; }
+  .info-popup { top: 0; left: 50%; right: auto; transform: translate(-50%, -10%); width: min(260px, calc(100vw - 48px)); padding: 16px; }
 }
 </style>

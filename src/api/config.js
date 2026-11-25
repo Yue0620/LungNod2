@@ -2,8 +2,8 @@ import axios from 'axios'
 
 // 创建 axios 实例
 const service = axios.create({
-  // 在开发环境中，vite 会代理 /api 请求到 http://localhost:8010
-  baseURL: '/api', 
+  // Follow the deployment base path so gateway requests stay under this app.
+  baseURL: import.meta.env.BASE_URL.replace(/\/$/, '') + '/api',
   timeout: 5000 // 请求超时时间
 })
 

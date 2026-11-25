@@ -3,17 +3,18 @@
     <!-- 1. 顶部导航栏 -->
     <header class="header">
       <div class="header-inner container">
-        <div class="logo" @click="$router.push('/')">IDP-LNOD</div>
+        <router-link to="/" class="logo" aria-label="IDP-LNOD home">
+          <img :src="logoUrl" alt="" class="brand-logo" width="60" height="60" />
+          <span>IDP-LNOD</span>
+        </router-link>
 
         <nav class="nav-links">
           <router-link to="/" active-class="active-link">{{ texts.home }}</router-link>
           
-          <!-- 下拉菜单：数据检索 -->
+          <!-- 下拉菜单：数据浏览 -->
           <div class="nav-item-dropdown">
-            <span
-                class="dropdown-trigger"
-                :class="{ 'active-link': $route.path.startsWith('/sample-search') || $route.path.startsWith('/data-search') }"
-            >
+            <span class="dropdown-trigger"
+              :class="{ 'active-link': $route.path.startsWith('/sample-search') || $route.path.startsWith('/data-search') }">
               {{ texts.dataSearch }}
               <i class="arrow-icon"></i>
             </span>
@@ -26,8 +27,7 @@
               </router-link>
             </div>
           </div>
-
-          <!-- 下拉菜单：绘图功能 -->
+          <!-- 下拉菜单：工具 -->
           <div class="nav-item-dropdown">
             <span
                 class="dropdown-trigger"
@@ -49,6 +49,8 @@
           <router-link to="/analysis" active-class="active-link">{{ texts.statAnalysis }}</router-link>
 
           <router-link to="/standards" active-class="active-link">{{ texts.dataStandard }}</router-link>
+
+          <a href="https://ngdc.cncb.ac.cn/idp/" target="_blank" rel="noopener noreferrer" class="idp-hub-link">IDP-Hub <span aria-hidden="true">↗</span></a>
 
           <a href="#">{{ texts.aboutUs }}</a>
 
@@ -87,15 +89,16 @@ import { currentLang, toggleLang } from '@/store/lang.js';
 
 const dictionary = {
   zh: {
-    home: '首页', dataSearch: '数据浏览', sampleData: '样本浏览', searchByProject: '数据集浏览', plot: '绘图功能', geneNetwork: '基因网络', tcrRepertoire: 'TCR 免疫组库', statAnalysis: '统计', dataStandard: '数据标准', aboutUs: '关于我们', footer: '© 2024 LungNod Database Project. 肺结节影像科研平台', sidebarTitle: '数据标准说明', sidebarItem1Title: '1. 影像数据标准', sidebarItem1Desc: '所有CT影像均为DICOM格式，层厚 <= 1.25mm...', sidebarItem2Title: '2. 标注规范', sidebarItem2Desc: '由两名主治医师进行双盲标注，IoU > 0.5 视为有效...', sidebarItem3Title: '3. 基因数据', sidebarItem3Desc: '采用 GRCh38 参考基因组...'
+    home: '首页', dataSearch: '数据浏览', sampleData: '样本浏览', searchByProject: '数据集浏览', plot: '工具', geneNetwork: '基因网络', tcrRepertoire: 'TCR 免疫组库', statAnalysis: '统计', dataStandard: '数据标准', aboutUs: '关于我们', footer: '© 2024 LungNod Database Project. 肺结节影像科研平台', sidebarTitle: '数据标准说明', sidebarItem1Title: '1. 影像数据标准', sidebarItem1Desc: '所有CT影像均为DICOM格式，层厚 <= 1.25mm...', sidebarItem2Title: '2. 标注规范', sidebarItem2Desc: '由两名主治医师进行双盲标注，IoU > 0.5 视为有效...', sidebarItem3Title: '3. 基因数据', sidebarItem3Desc: '采用 GRCh38 参考基因组...'
   },
   en: {
-    home: 'Home', dataSearch: 'Data Browse', sampleData: 'By Sample', searchByProject: 'By Dataset', plot: 'Plotting', geneNetwork: 'Gene Network', tcrRepertoire: 'TCR Repertoire', statAnalysis: 'Statistics', dataStandard: 'Standards', aboutUs: 'About Us', footer: '© 2024 LungNod Database Project. Lung Nodule Imaging Research Platform.', sidebarTitle: 'Data Standards Specification', sidebarItem1Title: '1. Imaging Standards', sidebarItem1Desc: 'All CT images are in DICOM format, slice thickness <= 1.25mm...', sidebarItem2Title: '2. Annotation Norms', sidebarItem2Desc: 'Double-blind annotation by two attending physicians, IoU > 0.5 is valid...', sidebarItem3Title: '3. Genomic Data', sidebarItem3Desc: 'Using GRCh38 reference genome...'
+    home: 'Home', dataSearch: 'Browse', sampleData: 'By Sample', searchByProject: 'By Dataset', plot: 'Tools', geneNetwork: 'Gene Network', tcrRepertoire: 'TCR Repertoire', statAnalysis: 'Statistics', dataStandard: 'Standards', aboutUs: 'About Us', footer: '© 2024 LungNod Database Project. Lung Nodule Imaging Research Platform.', sidebarTitle: 'Data Standards Specification', sidebarItem1Title: '1. Imaging Standards', sidebarItem1Desc: 'All CT images are in DICOM format, slice thickness <= 1.25mm...', sidebarItem2Title: '2. Annotation Norms', sidebarItem2Desc: 'Double-blind annotation by two attending physicians, IoU > 0.5 is valid...', sidebarItem3Title: '3. Genomic Data', sidebarItem3Desc: 'Using GRCh38 reference genome...'
   }
 };
 
 export default {
   computed: {
+    logoUrl() { return import.meta.env.BASE_URL + 'lungnod-logo.png'; },
     // 监听全局语言变量
     lang() { return currentLang.value; },
     texts() { return dictionary[this.lang]; }
@@ -111,15 +114,16 @@ export default {
 /* --- 全局基础 --- */
 :root { --primary-color: #42b983; --text-color: #333; --bg-gray: #f8fafc; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; color: var(--text-color); }
-/* Use responsive 10% side margins instead of fixed max-width */
-.container { margin: 0 10%; padding: 0; width: auto; max-width: none; }
+body { font-family: Arial, 'Microsoft YaHei', sans-serif; color: var(--text-color); }
+/* Shared responsive content width. */
+.container { width: calc(100% - var(--page-gutter) * 2); max-width: 1680px; margin-inline: auto; padding: 0; }
 
 /* --- Header & Nav --- */
 .header { background: #fff; border-bottom: 1px solid #eef2f6; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
 .header-inner { display: flex; justify-content: space-between; align-items: center; height: 80px; }
-.logo { font-size: 1.8rem; font-weight: 800; color: #2c3e50; cursor: pointer; letter-spacing: -0.5px; }
-.nav-links { display: flex; gap: 2rem; align-items: center; }
+.logo { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; text-decoration: none; white-space: nowrap; font-size: 1.8rem; font-weight: 800; color: #2c3e50; cursor: pointer; letter-spacing: -0.5px; }
+.brand-logo { display: block; width: 60px; height: 60px; object-fit: contain; flex-shrink: 0; }
+.nav-links { display: flex; gap: clamp(16px, 1.7vw, 32px); align-items: center; white-space: nowrap; }
 
 .nav-links > a, .dropdown-trigger {
   text-decoration: none; color: #64748b; font-weight: 500; cursor: pointer; transition: all 0.3s ease; position: relative;
@@ -169,4 +173,19 @@ body { font-family: 'Inter', sans-serif; color: var(--text-color); }
 .active-child { background: #f0fdf4; color: var(--primary-color); font-weight: 600; }
 
 .footer { background: #1e293b; color: #94a3b8; padding: 2rem 0; text-align: center; }
+.header-inner { gap: 24px; }
+@media (max-width: 1279px) {
+  .header-inner { gap: 16px; }
+  .logo { gap: 8px; font-size: 24px; }
+  .brand-logo { width: 48px; height: 48px; }
+  .nav-links { gap: 14px; font-size: 14px; }
+  .nav-links > .divider { margin: 0; }
+}
+@media (max-width: 1023px) {
+  .header-inner { height: auto; min-height: 80px; flex-wrap: wrap; padding-block: 10px; gap: 8px; }
+  .nav-links { width: 100%; flex-wrap: wrap; gap: 8px 20px; }
+  .nav-item-dropdown { height: 40px; }
+  .dropdown-panel { left: 0; transform: translateY(10px); }
+  .nav-item-dropdown:hover .dropdown-panel { transform: translateY(0); }
+}
 </style>

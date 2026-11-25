@@ -1,0 +1,12 @@
+:root {
+  --page-gutter: clamp(24px, 4vw, 72px);
+  --app-font: Arial, 'Microsoft YaHei', sans-serif;
+  --el-font-family: var(--app-font);
+}
+html { font-size: 16px; }
+body, button, input, select, textarea { font-family: var(--app-font); }
+button, input, select, textarea { font-size: inherit; }
+#app, .app-container { min-width: 0; }
+@media (max-width: 767px) {
+  :root { --page-gutter: 16px; }
+}

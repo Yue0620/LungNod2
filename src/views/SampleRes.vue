@@ -9,8 +9,8 @@
         </el-breadcrumb>
         <div class="top-btns">
           <el-button-group>
-            <el-button type="success" size="small" icon="Download" @click="exportData('current')">{{ t('dlCurrent') }}</el-button>
-            <el-button type="warning" size="small" icon="Document" @click="exportData('all')">{{ t('dlAll') }}</el-button>
+            <el-button type="success" size="small" icon="Download" :disabled="exporting" @click="exportData('current')">{{ t('dlCurrent') }}</el-button>
+            <el-button type="warning" size="small" icon="Document" :disabled="exporting" @click="exportData('all')">{{ t('dlAll') }}</el-button>
           </el-button-group>
         </div>
       </div>
@@ -134,7 +134,7 @@
               <el-pagination
                   v-model:current-page="currentPage" v-model:page-size="pageSize"
                   :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next"
-                  :total="filteredData.length" background
+                  :total="totalElements" background
               />
             </div>
           </div>
@@ -160,8 +160,8 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { usePagedTable } from '@/composables/usePagedTable'
 import { useRoute } from 'vue-router'
-import { fetchSamples } from '@/api/nodule'
 import * as XLSX from 'xlsx'
 // 1. 引入你的全局状态
 import { currentLang } from '@/store/lang.js'
@@ -238,37 +238,14 @@ const allFlatColumns = computed(() => translatedGroups.value.flatMap(g => g.colu
 const activeColumns = computed(() => allFlatColumns.value.filter(col => visibleColumns.value.includes(col.prop)))
 
 // --- 4. 业务逻辑 ---
-const route = useRoute(); const loading = ref(true); const rawData = ref([]); const activeCollapse = ref(['config']);
+const route = useRoute(); const activeCollapse = ref(['config']);
 const drawerVisible = ref(false); const currentDetail = ref({}); const filterText = ref('');
 const filterForm = ref({ omics: [], sex: '', ageRange: [0, 100] });
 const omicsOptions = ["Transcriptome", "scRNA_seq", "Spatial_Transcriptome", "Genomics", "Immunomics", "Proteomics", "Metabolome", "Radiomics", "GM_seq"];
-const currentPage = ref(1); const pageSize = ref(20); const sortProp = ref(''); const sortOrder = ref('');
-
-const filteredData = computed(() => {
-  return rawData.value.filter(item => {
-    const matchID = !filterText.value || item.individualId?.toLowerCase().includes(filterText.value.toLowerCase());
-    const matchOmics = filterForm.value.omics.length === 0 || filterForm.value.omics.includes(item.omicsType);
-    const matchSex = !filterForm.value.sex || item.sex === filterForm.value.sex;
-    const matchAge = item.age >= filterForm.value.ageRange[0] && item.age <= filterForm.value.ageRange[1];
-    return matchID && matchOmics && matchSex && matchAge;
-  });
+const { data: rawData, loading, currentPage, pageSize, sortProp, sortOrder, totalElements, loadData, exporting, exportResult } = usePagedTable({
+  endpoint: '/samples', keyword: filterText, filters: () => ({ stage: route.query.stage, omicsType: filterForm.value.omics, sex: filterForm.value.sex, minAge: filterForm.value.ageRange[0], maxAge: filterForm.value.ageRange[1] })
 })
-
-const sortedData = computed(() => {
-  const data = [...filteredData.value]
-  if (!sortProp.value) return data
-  return data.sort((a, b) => {
-    let aV = a[sortProp.value], bV = b[sortProp.value]
-    const mod = sortOrder.value === 'ascending' ? 1 : -1
-    if (isNumeric(aV) && isNumeric(bV)) return (parseFloat(aV) - parseFloat(bV)) * mod
-    return String(aV).localeCompare(String(bV)) * mod
-  })
-})
-
-const pagedData = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  return sortedData.value.slice(start, start + pageSize.value)
-})
+const pagedData = computed(() => rawData.value)
 
 // --- 5. 功能函数 ---
 const selectAll = () => { visibleColumns.value = allFlatColumns.value.map(c => c.prop) }
@@ -283,21 +260,14 @@ const handleSortChange = ({ prop, order }) => { sortProp.value = prop; sortOrder
 const resetFilters = () => { filterForm.value = { omics: [], sex: '', ageRange: [0, 100] }; filterText.value = ''; }
 const showDetail = (row) => { currentDetail.value = row; drawerVisible.value = true; }
 
-const exportData = (type) => {
-  const data = type === 'current' ? filteredData.value : rawData.value
-  const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `LungNod_Data_${type}.xlsx`)
-}
-
-onMounted(async () => {
-  loading.value = true
-  try {
-    const res = await fetchSamples(route.query.stage)
-    rawData.value = res || []
-  } finally {
-    loading.value = false
-  }
+const exportData = (type) => exportResult(type, data => {
+  const ws = XLSX.utils.json_to_sheet(data)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Data')
+  XLSX.writeFile(wb, `LungNod_Data_${type}.xlsx`)
 })
+
+onMounted(loadData)
 </script>
 
 <style scoped>
@@ -329,8 +299,8 @@ onMounted(async () => {
 .result-panel { flex: 1; min-width: 0; }
 .table-container { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-.id-text { font-family: 'Monaco', monospace; font-weight: bold; color: #42b983; }
-.num-font { font-family: 'Inter', sans-serif; font-weight: 600; color: #475569; }
+.id-text { font-family: Arial, 'Microsoft YaHei', sans-serif; font-weight: bold; color: #42b983; }
+.num-font { font-family: Arial, 'Microsoft YaHei', sans-serif; font-weight: 600; color: #475569; }
 .pagination-area { margin-top: 15px; display: flex; justify-content: flex-end; }
 .w-100 { width: 100%; }
 

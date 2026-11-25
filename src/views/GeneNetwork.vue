@@ -329,7 +329,7 @@ onMounted(() => initCytoscape());
 
 .input-section { margin-top: 15px; margin-bottom: 15px; }
 .input-label { font-size: 11px; color: #64748b; margin-bottom: 6px; font-weight: bold; }
-.gene-textarea :deep(.el-textarea__inner) { font-family: 'Monaco', monospace; font-size: 10px; background: #f9fafb; padding: 8px; }
+.gene-textarea :deep(.el-textarea__inner) { font-family: Arial, 'Microsoft YaHei', sans-serif; font-size: 10px; background: #f9fafb; padding: 8px; }
 .layout-controls { background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
 .config-title { font-size: 11px; color: #94a3b8; font-weight: bold; margin-bottom: 8px; }
 

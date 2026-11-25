@@ -9,8 +9,8 @@
         </el-breadcrumb>
         <div class="top-btns">
           <el-button-group>
-            <el-button type="success" size="small" icon="Download" @click="exportData('current')">{{ t('dlCurrent') }}</el-button>
-            <el-button type="warning" size="small" icon="Document" @click="exportData('all')">{{ t('dlAll') }}</el-button>
+            <el-button type="success" size="small" icon="Download" :disabled="exporting" @click="exportData('current')">{{ t('dlCurrent') }}</el-button>
+            <el-button type="warning" size="small" icon="Document" :disabled="exporting" @click="exportData('all')">{{ t('dlAll') }}</el-button>
           </el-button-group>
         </div>
       </div>
@@ -53,22 +53,22 @@
             <template #header><span class="card-title">{{ t('filterTitle') }}</span></template>
             <el-form :model="filterForm" label-position="top" size="small">
               <el-form-item :label="t('fProject')">
-                <el-select v-model="filterForm.projectId" :placeholder="t('all')" clearable @change="loadData">
+                <el-select v-model="filterForm.projectId" :placeholder="t('all')" clearable>
                   <el-option v-for="proj in projectOptions" :key="proj" :label="proj" :value="proj" />
                 </el-select>
               </el-form-item>
               <el-form-item :label="t('fOmics')">
-                <el-select v-model="filterForm.omicsType" multiple collapse-tags :placeholder="t('all')" @change="loadData">
+                <el-select v-model="filterForm.omicsType" multiple collapse-tags :placeholder="t('all')">
                   <el-option v-for="t in dynamicOmicsOptions" :key="t" :label="t" :value="t" />
                 </el-select>
               </el-form-item>
               <el-form-item :label="t('fDisease')">
-                <el-select v-model="filterForm.disease" :placeholder="t('all')" clearable filterable @change="loadData">
+                <el-select v-model="filterForm.disease" :placeholder="t('all')" clearable filterable>
                   <el-option v-for="d in diseaseOptions" :key="d" :label="d" :value="d" />
                 </el-select>
               </el-form-item>
               <el-form-item :label="t('fTissue')">
-                <el-select v-model="filterForm.tissue" :placeholder="t('all')" clearable @change="loadData">
+                <el-select v-model="filterForm.tissue" :placeholder="t('all')" clearable>
                   <el-option v-for="tis in tissueOptions" :key="tis" :label="tis" :value="tis" />
                 </el-select>
               </el-form-item>
@@ -136,7 +136,7 @@
               <el-pagination
                   v-model:current-page="currentPage" v-model:page-size="pageSize"
                   :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next"
-                  :total="filteredData.length" background
+                  :total="totalElements" background
               />
             </div>
           </div>
@@ -150,8 +150,9 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { usePagedTable } from '@/composables/usePagedTable'
 import { useRouter } from 'vue-router'
-import { fetchLungData, fetchAllProjects } from '@/api/nodule'
+import { fetchAllProjects } from '@/api/nodule'
 import * as XLSX from 'xlsx'
 import { currentLang } from '@/store/lang.js'
 
@@ -207,8 +208,6 @@ const allFlatColumns = computed(() => translatedGroups.value.flatMap(g => g.colu
 const activeColumns = computed(() => allFlatColumns.value.filter(col => visibleColumns.value.includes(col.prop)))
 
 // 业务逻辑
-const loading = ref(true)
-const rawData = ref([])
 const activeCollapse = ref(['config'])
 
 const filterText = ref('')
@@ -220,37 +219,12 @@ const dynamicOmicsOptions = ref([])
 const diseaseOptions = ref([])
 const tissueOptions = ref([])
 
-const currentPage = ref(1)
-const pageSize = ref(20)
-const sortProp = ref('')
-const sortOrder = ref('')
-
-const filteredData = computed(() => {
-  return rawData.value.filter(item => {
-    const matchSearch = !filterText.value || 
-      (item.myProjectId && item.myProjectId.toLowerCase().includes(filterText.value.toLowerCase())) ||
-      (item.datasetName && item.datasetName.toLowerCase().includes(filterText.value.toLowerCase())) ||
-      (item.disease && item.disease.toLowerCase().includes(filterText.value.toLowerCase())) ||
-      (item.tissue && item.tissue.toLowerCase().includes(filterText.value.toLowerCase()))
-    return matchSearch
-  })
+const { data: rawData, loading, currentPage, pageSize, sortProp, sortOrder, totalElements, loadData, exporting, exportResult } = usePagedTable({
+  endpoint: '/data', keyword: filterText, filters: () => ({ ...filterForm.value }),
+  optionsEndpoint: '/data/filters',
+  onOptions: values => { diseaseOptions.value = values.disease; dynamicOmicsOptions.value = values.omicsType; tissueOptions.value = values.tissue }
 })
-
-const sortedData = computed(() => {
-  const data = [...filteredData.value]
-  if (!sortProp.value) return data
-  return data.sort((a, b) => {
-    let aV = a[sortProp.value], bV = b[sortProp.value]
-    const mod = sortOrder.value === 'ascending' ? 1 : -1
-    if (isNumeric(aV) && isNumeric(bV)) return (parseFloat(aV) - parseFloat(bV)) * mod
-    return String(aV || '').localeCompare(String(bV || '')) * mod
-  })
-})
-
-const pagedData = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  return sortedData.value.slice(start, start + pageSize.value)
-})
+const pagedData = computed(() => rawData.value)
 
 // 功能函数
 const selectAll = () => { visibleColumns.value = allFlatColumns.value.map(c => c.prop) }
@@ -259,7 +233,7 @@ const isNumeric = (v) => !isNaN(parseFloat(v)) && isFinite(v) && typeof v !== 'b
 const formatNumber = (v) => parseFloat(v) % 1 === 0 ? v : parseFloat(v).toFixed(2)
 const getOmicsColor = (t) => ({'Transcriptome':'#3498db','Transcriptome_10x':'#7c3aed','scRNA_seq':'#9b59b6','TCR':'#f59e0b','scTCR':'#f59e0b','Radiomics':'#e67e22','Spatial_Transcriptome':'#1abc9c'}[t] || '#42b983')
 const handleSortChange = ({ prop, order }) => { sortProp.value = prop; sortOrder.value = order; }
-const resetFilters = () => { filterForm.value = { projectId: '', omicsType: [], disease: '', tissue: '' }; filterText.value = ''; currentPage.value = 1; loadData() }
+const resetFilters = () => { filterForm.value = { projectId: '', omicsType: [], disease: '', tissue: '' }; filterText.value = ''; currentPage.value = 1 }
 const showDetail = (row) => {
   router.push({
     name: 'DataDetail',
@@ -267,37 +241,14 @@ const showDetail = (row) => {
   })
 }
 
-const exportData = (type) => {
-  const data = type === 'current' ? filteredData.value : rawData.value
+const exportData = (type) => exportResult(type, data => {
   const ws = XLSX.utils.json_to_sheet(data)
   const wb = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(wb, ws, "Data")
+  XLSX.utils.book_append_sheet(wb, ws, 'Data')
   XLSX.writeFile(wb, `LungNod_Data_${type}.xlsx`)
-}
+})
 
-const loadData = async () => {
-  loading.value = true
-  try {
-    const params = {}
-    if (filterForm.value.projectId) params.projectId = filterForm.value.projectId
-    if (filterForm.value.disease) params.disease = filterForm.value.disease
-    if (filterForm.value.tissue) params.tissue = filterForm.value.tissue
-    if (filterForm.value.omicsType.length > 0) params.omicsType = filterForm.value.omicsType[0]
-    
-    const res = await fetchLungData(params)
-    rawData.value = res || []
-    try { sessionStorage.setItem('allDatasets', JSON.stringify(res)) } catch {}
-    
-    // 更新过滤器选项：从数据中动态提取
-    diseaseOptions.value = [...new Set(rawData.value.map(d => d.disease).filter(Boolean))].sort()
-    dynamicOmicsOptions.value = [...new Set(rawData.value.map(d => d.omicsType).filter(Boolean))].sort()
-    tissueOptions.value = [...new Set(rawData.value.map(d => d.tissue).filter(Boolean))].sort()
-    
-    currentPage.value = 1
-  } finally {
-    loading.value = false
-  }
-}
+
 
 const loadProjects = async () => {
   try {
@@ -345,9 +296,9 @@ onMounted(async () => {
 .result-panel { flex: 1; min-width: 0; }
 .table-container { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
 
-.id-text { font-family: 'Monaco', monospace; font-weight: bold; color: #42b983; }
+.id-text { font-family: Arial, 'Microsoft YaHei', sans-serif; font-weight: bold; color: #42b983; }
 .dataset-name-cell { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.num-font { font-family: 'Inter', sans-serif; font-weight: 600; color: #475569; }
+.num-font { font-family: Arial, 'Microsoft YaHei', sans-serif; font-weight: 600; color: #475569; }
 .pagination-area { margin-top: 15px; display: flex; justify-content: flex-end; }
 .w-100 { width: 100%; }
 
